@@ -7,6 +7,7 @@ connectToDB()
     app.get("/", (req, res) => {
       res.send("Welcome to the e-commerce website");
     });
+    
     const port = process.env.PORT || 3000;
     app.listen(port, () => {
       console.log(`The app is listening on http://localhost:${port}`);

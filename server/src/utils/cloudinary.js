@@ -13,7 +13,8 @@ const uploadToCloudinary = async (file) => {
     try {
       if (!file) return null
       const response = await cloudinary.uploader.upload(file, {
-        resource_type:'auto'
+        resource_type:'auto',
+        folder:"smart-menu-system/food-items"
       })
       
       fs.unlinkSync(file)
@@ -29,9 +30,9 @@ const uploadToCloudinary = async (file) => {
     }
 }
 
-const deleteFromCloudinary = async(req, res) => {
+const deleteFromCloudinary = async(fileUrl) => {
   try {
-    await cloudinary.uploader.destroy('docs/vegetables')
+    await cloudinary.uploader.destroy(fileUrl.split('/').pop())
   } catch (error) {
     throw Error(error.message)
   }
