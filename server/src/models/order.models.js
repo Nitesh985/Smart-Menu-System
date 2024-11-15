@@ -1,7 +1,18 @@
 import {Schema, model} from 'mongoose'
 
+const orderItemSchema = new Schema({
+    foodId: {
+        type: Schema.Types.ObjectId,
+        ref: "Food",
+        required: true
+    },
+    quantity: {
+        type: Number,
+        required: true
+    }
+})
 
-const  orderSchema = new Schema({
+const orderSchema = new Schema({
     table_no:{
         type:Number,
         required: true
@@ -14,12 +25,11 @@ const  orderSchema = new Schema({
         type: String
     },
     orderItems:{
-        type:[Schema.Types.ObjectId],
-        ref: "Food",
+        type:[orderItemSchema],
         required:true
     }
 }, { timestamps: true })
 
 
-export const Product = model("Order", orderSchema)
+export const Order = model("Order", orderSchema)
 

@@ -7,7 +7,10 @@ const foodSchema = new Schema({
         required: true
     },
     image:{
-        type:Strig
+        type:{
+            url:String,
+            public_id:String
+        }
     },
     description: {
         type: String
