@@ -1,7 +1,7 @@
 import {Schema, model} from 'mongoose'
 
 
-const foodSchema = new Schema({
+const dishSchema = new Schema({
     name:{
         type:String,
         required: true
@@ -21,10 +21,11 @@ const foodSchema = new Schema({
     },
     categoryId:{
         type:Schema.Types.ObjectId,
-        ref:"Category"
+        ref:"Category",
+        required: true
     }
 }, { timestamps: true })
 
 
-export const Food = model("Food", foodSchema)
+export const Dish = model("Dish", dishSchema)
 

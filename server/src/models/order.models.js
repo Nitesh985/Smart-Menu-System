@@ -9,12 +9,17 @@ const orderItemSchema = new Schema({
     quantity: {
         type: Number,
         required: true
+    },
+    total: {
+        type: Number,
+        required: true,
+        default: 0
     }
 })
 
 const orderSchema = new Schema({
     table_no:{
-        type:Number,
+        type:String,
         required: true
     },
     orderType: {
