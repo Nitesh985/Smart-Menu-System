@@ -1,5 +1,8 @@
-import { Card } from '../..';
+import { useEffect, useState } from 'react';
+import { Card, Loader } from '../..';
 import OrderItem from './OrderItem';
+import { getOrders } from '../../../api/order';
+import { OrderItemProps } from './OrderItem';
 
 
 const orders = [
@@ -9,16 +12,27 @@ const orders = [
   { id: 4, table_no: 'E6', total: 400, type:"Dine-In", tip:"Please add some chilies on it" },
   { id: 5, table_no: 'A10', total: 700, type:"Dine-In",tip:"Please add some garlic on it" },
   { id: 6, table_no: 'A10', total: 700, type:"Dine-In",tip:"Please add some garlic on it" },
-  { id: 7, table_no: 'A10', total: 700, type:"Dine-In",tip:"Please add some garlic on it" },
+  { id: 7, table_no: 'A6', total: 700, type:"Dine-In",tip:"Please add some garlic on it" },
   { id: 8, table_no: 'A10', total: 700, type:"Dine-In",tip:"Please add some garlic on it" },
   { id: 9, table_no: 'A10', total: 700, type:"Dine-In",tip:"Please add some garlic on it" },
 ]
 
 function OrderList() {
+  const [userOrders, setUserOrders] = useState<OrderItemProps[]>([])
+  
+  useEffect(()=>{
+    getOrders()
+    .then(res=>{
+      setUserOrders(res.data)
+    })
+  }, [])
+
+  console.log(userOrders)
+  
   return (
     <div className="flex justify-between items-center bg-primary-100 flex-wrap p-7 w-full cursor-pointer" >
-      {orders.map(order=>(
-        <OrderItem key={order.id} {...order}/>
+      {userOrders.length>0 && userOrders.map(order=>(
+        <OrderItem key={order._id} {...order}/>
       ))}
     </div>
   )

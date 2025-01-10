@@ -1,28 +1,39 @@
-import { Button } from "."
+import { Button } from ".";
+import { useEffect, useId, useRef, useState } from "react";
 
-function Modal() {
+interface ModalProps {
+  id: string;
+  isOpen?: boolean;
+  buttonStyles?: string;
+  buttonLabel?: string;
+  children?: React.ReactNode;
+}
 
+function Modal({ id, buttonStyles, buttonLabel, children }: ModalProps) {
+
+  useEffect(() => {
+    (document.getElementById(id) as HTMLFormElement)?.showModal();
+  }, []);
 
   return (
     <>
-      <Button
-        className="btn"
-        onClick={()=>document.getElementById("my_modal_1").showModal()}
-      >
-        open modal
-      </Button>
-      <dialog id="my_modal_1" className="modal">
+      <dialog id={id} className="modal">
         <div className="modal-box">
-          <h3 className="font-bold text-lg">Hello!</h3>
-          <p className="py-4">
-            Press ESC key or click the button below to close
-          </p>
-          <div className="modal-action">
-            <form method="dialog">
-              {/* if there is a button in form, it will close the modal */}
-              <button className="btn">Close</button>
-            </form>
-          </div>
+          <form method="dialog">
+            {/* if there is a button in form, it will close the modal */}
+            <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
+              ✕
+            </button>
+          </form>
+          {children}
+          {buttonLabel && (
+            <div className="modal-action">
+              <form method="dialog">
+                {/* if there is a button in form, it will close the modal */}
+                <Button className={`btn ${buttonStyles}`}>{buttonLabel}</Button>
+              </form>
+            </div>
+          )}
         </div>
       </dialog>
     </>

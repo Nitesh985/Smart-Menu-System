@@ -5,21 +5,24 @@ const orderApi = axios.create({
   baseURL: '/api/v1/orders',
 });
 
-export interface Order {
+export interface OrderType {
     table_no: string;
     orderType: {
         type: string;
         enum: ["Delivery", "Take Away", "Dine-In"]
-    }
-    dishes: Dish[];
+    };
+    note:string;
+    orderItems: Dish[];
     total: number;
 }
     
-const createOrder = async (orderId: number, orderData: Order) => {
+const makeOrder = async (orderData: OrderType) => {
     try {
-        const response = await orderApi.post(`create-order/${orderId}`, orderData);
+        const response = await orderApi.post(`make-order`, orderData);
         return response.data;
     } catch (error) {
+        console.log(error)
+        console.log(error?.response?.data.message)
         if (error instanceof axios.AxiosError) {
         throw new Error(`Error creating order: ${error.message}`);
         }
@@ -28,7 +31,7 @@ const createOrder = async (orderId: number, orderData: Order) => {
 
 const getOrders = async () => {
     try {
-        const response = await orderApi.get('/get-orders');
+        const response = await orderApi.get('/');
         return response.data;
     } catch (error) {
         if (error instanceof axios.AxiosError) {
@@ -39,6 +42,6 @@ const getOrders = async () => {
 }
     
 
-export { createOrder, getOrders };
+export { makeOrder , getOrders };
 
 

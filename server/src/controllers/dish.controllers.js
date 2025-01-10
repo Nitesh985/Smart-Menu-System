@@ -1,9 +1,11 @@
 import { ApiError, ApiResponse, asyncHandler, uploadToCloudinary } from "../utils/index.js";
 import { Dish } from "../models/dish.models.js";
 import { Category } from "../models/category.models.js";
+import mongoose from 'mongoose'
+
 
 const getAllDishes = asyncHandler(async (req, res) => {
-    const foodItems = await Dish.find();
+    const foodItems = await Dish.find({});
     if (!foodItems) {
         throw new ApiError(404, "The food items were not available");
     }
@@ -14,32 +16,72 @@ const getAllDishes = asyncHandler(async (req, res) => {
 
 const getDishItemById = asyncHandler(async (req, res) => {
     const { dishId } = req.params;
-    const dishItem = await Dish.findById(dishId);
+    const dishItem = await Dish.aggregate([
+        {
+            $match: { 
+                _id: new mongoose.Types.ObjectId(dishId)
+            }
+
+        },
+        {
+            $lookup: {
+                from: "categories",
+                localField: "categoryId",
+                foreignField: "_id",
+                as: "category"
+            }
+        },
+        {
+            $unwind: "$category"
+        },
+        {
+            $addFields:{
+                category:"$category.name"
+            }
+        },
+    ])
+
+    // const dishItem = await Dish.findById(dishId);
     if (!dishItem) {
         throw new ApiError(404, "The food item by that id was not found");
     }
     return res.json(
-        new ApiResponse(200, foodItem, "The food item fetched successfully")
+        new ApiResponse(200, dishItem[0], "The food item fetched successfully")
     );
 });
 
 const addDishItem = asyncHandler(async (req, res) => {
     const { name, price, category, description } = req.body;
     
-    const imagePaths = req.files
-    const images = []
-    for (const imagePath of imagePaths) {
-        const image = await uploadToCloudinary(imagePath)
-        images.push(image)
+    const imagePath = req.file?.path
+
+    const image = await uploadToCloudinary(imagePath)
+
+    if (imagePath && !image){
+        throw new ApiError(500, "Something went wrong uploading image to cloudinary")
     }
 
-    if (!images ||!images.length || images.length!== imagePaths.length) {
-        throw new ApiError(500, "Something went wrong uploading the image");
+    // const imagePaths = req.files
+    // const images = []
+    // for (const imagePath of imagePaths) {
+    //     const image = await uploadToCloudinary(imagePath)
+    //     images.push(image)
+    // }
+
+    // if (!images ||!images.length || images.length!== imagePaths.length) {
+    //     throw new ApiError(500, "Something went wrong uploading the image");
+    // }
+
+    const findCategory = await Category.findOne({name:category})
+
+    if (!findCategory){
+        throw new ApiError(400, `The category by the name ${category} does not exist!`)
     }
 
-    const categoryId = await Category.find({name:category})
+    const categoryId = findCategory._id
 
-    const foodAdded = await Dish.create({ name, price, categoryId, description})
+    const foodAdded = await Dish.create({ name, price, image, categoryId, description})
+
 
     if (!foodAdded) {
         throw new ApiError(500, "Error while adding the food item");
@@ -51,13 +93,14 @@ const addDishItem = asyncHandler(async (req, res) => {
 });
 
 const removeDishItem = asyncHandler(async (req, res)=>{
-    const { foodId } = req.params
+    const { dishId } = req.params
 
-    if (!foodId){
+
+    if (!dishId){
         throw new ApiError(400, "The food id is not given")
     }
 
-    const foodRemoved = await Dish.findByIdAndRemove(foodId)
+    const foodRemoved = await Dish.findByIdAndDelete(dishId)
     if (!foodRemoved) {
         throw new ApiError(404, "The food item by that id was not found")
     }
@@ -66,23 +109,59 @@ const removeDishItem = asyncHandler(async (req, res)=>{
     )
 })
 
-const updateDishItem = asyncHandler(async (req, res)=>{
-    const { foodId } = req.params
-    const foodUpdates = req.body
+const removeAllDishes = asyncHandler(async(req, res)=>{
+    const dishesRemoved = await Dish.deleteMany()
+    if (!dishesRemoved) {
+        throw new ApiError(500, "Error while removing all dishes")
+        }
+    return res.json(
+        new ApiResponse(200, {}, "All dishes removed successfully")
+    )
+})
 
-    if (!foodId){
+const updateDishItem = asyncHandler(async (req, res)=>{
+    const { dishId } = req.params
+    const dishUpdates = req.body
+    const {category} = dishUpdates
+
+    if (!dishId){
         throw new ApiError(400, "The food id is not given")
     }
 
-    if (!foodUpdates){
+    if (!dishUpdates){
         throw new ApiError(400, "The food updates are not given")
     }
+
+    const findCategory = await Category.findOne({name:category})
     
-    const updatedFood = await Dish.findByIdAndUpdate(foodId, {...foodUpdates}) 
+    if (category && !findCategory){
+        throw new ApiError(400, `The category by the name ${category} does not exist!`)
+    }
+    const imagePath = req.file?.path
+
+    const image = await uploadToCloudinary(imagePath)
+
+    if (imagePath && !image){
+        throw new ApiError(500, "Something went wrong uploading image to cloudinary")
+    }
+
+    if (imagePath && image){
+        dishUpdates.image = image
+    }
+
+    dishUpdates.categoryId = findCategory?._id
+    delete dishUpdates.category
+    console.log(dishUpdates) 
+    
+    const updatedFood = await Dish.findByIdAndUpdate(dishId, {...dishUpdates}) 
 
     if (!updatedFood){
         throw new ApiError(404, "The food item by that id was not found")
     }
+
+    return res.json(
+        new ApiResponse(200, updatedFood, "The food item updated successfully")
+    );
 });
 
 const searchDishItem = asyncHandler(async(req, res)=>{
@@ -127,5 +206,6 @@ export {
     addDishItem,
     removeDishItem,
     updateDishItem,
-    searchDishItem
+    searchDishItem,
+    removeAllDishes,
 }

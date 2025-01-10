@@ -27,7 +27,8 @@ function SideBar({ children, itemsList }: SideBarProps) {
           aria-label="close sidebar"
           className="drawer-overlay"
         ></label>
-        <ul className="flex flex-col bg-base-300  rounded-box text-base-content min-h-full w-72 p-10 space-y-3">
+        {/* // TODO:Check this as well after the tailwind.config.js one */}
+        <ul className="flex flex-col bg-base-300 rounded-box text-base-content min-h-full w-72 p-10 space-y-3">
           {itemsList.map((item) => (
             <SideBarItem key={item.name} {...item} />
           ))}

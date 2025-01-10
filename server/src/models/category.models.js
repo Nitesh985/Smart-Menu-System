@@ -8,6 +8,12 @@ const categorySchema = new Schema({
     },
     description: {
         type: String
+    },
+    image:{
+        type:{
+            url:String,
+            public_id:String
+        }
     }
 }, { timestamps: true })
 

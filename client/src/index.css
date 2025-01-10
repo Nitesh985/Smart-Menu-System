@@ -2,6 +2,55 @@
 @tailwind components;
 @tailwind utilities;
 
+.montserrat-title {
+  font-family: "Montserrat", serif;
+  font-optical-sizing: auto;
+  font-weight: 900;
+  font-style: normal;
+}
+
+.roboto-medium {
+    font-family: "Roboto", serif;
+    font-weight: 400;
+    font-style: normal;
+  }
+
+  .roboto-bold {
+    font-family: "Roboto", serif;
+    font-weight: 700;
+    font-style: normal;
+  }
+
+.anton-regular {
+    font-family: "Anton", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+  }
+  
+
+.doto-title {
+  font-family: "Doto", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 500;
+  font-style: normal;
+  font-variation-settings:
+    "ROND" 0;
+}
+
+
+.eb-garamond-font {
+  font-family: "EB Garamond", serif;
+  font-optical-sizing: auto;
+  font-weight: 500;
+  font-style: normal;
+}
+
+@layer utilities{
+    .no-scrollbar::-webkit-scrollbar {
+        display: none;
+    }
+}
+
 @layer components{
     .sidebar-icon{
         @apply w-8 h-8 text-txtColor-100 rounded-full;
@@ -11,6 +60,19 @@
     .sidebar-label{
         @apply text-sm font-[650] ;
     }
+    .green-submit-button{
+        @apply bg-bgColor-500 hover:text-green-600 hover:bg-white text-white;
+    }
+    .form-with-file{
+        @apply bg-white;
+    }
+    .add-button{
+      @apply w-12 bg-green-700 hover:bg-green-600 border-none text-xl;
+    }
+    .sub-button{
+      @apply w-12 bg-red-700 border-none hover:bg-red-600 text-xl;
+    }
+    
 }
 
 @layer base{

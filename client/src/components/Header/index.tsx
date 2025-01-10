@@ -1,14 +1,21 @@
-import logo from "../../assets/logo.png"
-
+// import logo from "../../assets/logo.png";
+import logo from '../../assets/web-logo.png'
+// import pizzaLogo from '../../assets/pizzaLogo.png'
+import pizzaLogo from '../../assets/pizzaLogoNobg.png'
+import {Image, SearchBar} from "../index";
+import { Link } from 'react-router-dom';
 
 function Header() {
   return (
-    <header className="p-7 bg-slate-100">
-        <nav>
-          <div><img src={logo} alt="web-logo" className="w-[200px] h-[80px]" /></div>
-        </nav>
-      </header>
-  )
+    <header className="p-4 flex justify-between items-center ">
+      <Link to="/">
+        <Image imageUrl={pizzaLogo} alt="web-logo" className='border rounded-full border-opacity-45 border-white'  />
+      </Link>
+      <div className="w-4/6" >
+        <SearchBar/>
+      </div>
+    </header>
+  );
 }
 
-export default Header
+export default Header;

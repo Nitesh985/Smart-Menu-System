@@ -1,19 +1,18 @@
 import {Schema, model} from 'mongoose'
 
 const orderItemSchema = new Schema({
-    foodId: {
+    _id: {
         type: Schema.Types.ObjectId,
-        ref: "Food",
+        ref: "Dish",
         required: true
     },
     quantity: {
         type: Number,
         required: true
     },
-    total: {
+    price: {
         type: Number,
-        required: true,
-        default: 0
+        requried: true
     }
 })
 
@@ -32,6 +31,10 @@ const orderSchema = new Schema({
     orderItems:{
         type:[orderItemSchema],
         required:true
+    },
+    totalPrice:{
+        type: Number,
+        required: true
     }
 }, { timestamps: true })
 

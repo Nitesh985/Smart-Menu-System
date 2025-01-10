@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 
 const foodApi = axios.create({
   baseURL: '/api/v1/dishes',
@@ -8,16 +8,19 @@ export interface Dish{
     name: string;
     price: number;
     description?: string;
-    image?: string;
+    image?: File| undefined;
     category: string;
 }
 
 const getAllDishes = async () => {
     try {
-        const response = await foodApi.get("/get-all-dishes");
-        return response.data;
+        const response = await foodApi.get("/");
+        return response.data?.data;
     } catch (error) {
-        throw new Error(`Failed to fetch dishes: ${error}`);        
+        console.error(error)
+        if (error instanceof AxiosError){
+            throw new Error(error.response?.data?.message)
+        }
     }
 };
 
@@ -26,25 +29,47 @@ const getDishById = async (dishId:string) => {
         const response = await foodApi.get(`/get-dish/${dishId}`);
         return response.data;
     } catch (error) {
-        throw new Error(`Failed to fetch dish with id ${dishId}: ${error}`);        
+        console.error(error)
+        if (error instanceof AxiosError){
+            throw new Error(error.response?.data?.message)
+        }        
     }
 };
 
-const addDish = async ({...dishData}:Dish) => {
+const addDish = async (dishData:any) => {
     try {
-        const response = await foodApi.post('/add-dish/', dishData);
+        const response = await foodApi.post('/add-dish/', dishData, {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          });
         return response.data;
     } catch (error) {
-        throw new Error(`Failed to add dish: ${error}`);        
+        console.error(error);
+        if (error instanceof AxiosError){
+            throw new Error(error.response?.data?.message)
+        }
+        if (error instanceof Error){
+            throw new Error(error?.message)
+        }
     }
 };
 
 const updateDish = async (dishId: string, dishData: any) => {
     try {
-        const response = await foodApi.put(`/update-dish/${dishId}`, dishData);
+        console.log("dishData")
+        console.log(dishData)
+        const response = await foodApi.patch(`/update-dish/${dishId}`, dishData, {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          });
         return response.data;
     } catch (error) {
-        throw new Error(`Failed to update dish with id ${dishId}: ${error}`);        
+        console.error(error)
+        if (error instanceof AxiosError){
+            throw new Error(error.response?.data?.message)
+        }        
     }
 };
 
@@ -52,7 +77,10 @@ const deleteDish = async (dishId: string) => {
     try {
         await foodApi.delete(`/delete-dish/${dishId}`);
     } catch (error) {
-        throw new Error(`Failed to delete dish with id ${dishId}: ${error}`);        
+        console.error(error)
+        if (error instanceof AxiosError){
+            throw new Error(error.response?.data?.message)
+        }        
     }
 };
 
@@ -61,7 +89,10 @@ const searchDish = async (s:string)=>{
         const response = await foodApi.get(`/search-dish/s=${s}`);
         return response.data;
     }catch(error){
-        throw new Error(`Failed to search the dish: ${error}`);
+        console.error(error)
+        if (error instanceof AxiosError){
+            throw new Error(error.response?.data?.message)
+        }
     }
 }
 

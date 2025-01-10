@@ -1,47 +1,85 @@
-import styled from 'styled-components';
+import styled from "styled-components";
+import { DishProps } from "../user/Home/DishCard";
+import { Image } from '..'
+import { useEffect, useRef, useState } from "react";
+import DishItem from "./DishItem";
+
+export type OrderType = {
+  table_no: string;
+  tip: string;
+  dishes: DishType[];
+  total: number;
+};
+
+export type DishType = {
+  _id: string;
+  name: string;
+  image: {
+    url: string;
+    public_id: string;
+  };
+  description: string;
+  quantity: number;
+};
+
+const dishes = [
+  {
+    _id: "1",
+    name: "Spaghetti Carbonara",
+    image: {
+      url: "https://images.pexels.com/photos/20406164/pexels-photo-20406164/free-photo-of-cloud-over-lake-bled-in-slovenia.jpeg?auto=compress&cs=tinysrgb&w=600&lazy=load",
+      public_id: "smart-menu-system/spaghetti-carbonara_v2_i8w9o2",
+    },
+    description:
+      "Spaghetti carbonara is a classic Italian pasta dish made with whole wheat flour, egg, and tomato sauce. It is often served with a side of marinated meat or vegetables.",
+    price: 12.99,
+    quantity: 1,
+  },
+  {
+    _id: "2",
+    name: "Spaghetti Carbonara",
+    image: {
+      url: "https://images.pexels.com/photos/20406164/pexels-photo-20406164/free-photo-of-cloud-over-lake-bled-in-slovenia.jpeg?auto=compress&cs=tinysrgb&w=600&lazy=load",
+      public_id: "smart-menu-system/spaghetti-carbonara_v2_i8w9o2",
+    },
+    description:
+      "Spaghetti carbonara is a classic Italian pasta dish made with whole wheat flour, egg, and tomato sauce. It is often served with a side of marinated meat or vegetables.",
+    price: 12.99,
+    quantity: 1,
+  },
+];
 
 const CheckOutForm = () => {
+
+  const [order, setOrder] = useState<OrderType>({
+    table_no: "D1",
+    tip: "15%",
+    dishes,
+    total: dishes.reduce((acc, curr) => acc + curr.price * curr.quantity, 0),
+  })
+
+
+
   return (
     <StyledWrapper>
       <div className="master-container">
         <div className="card cart">
           <label className="title">Your cart</label>
           <div className="products">
-            <div className="product">
-              <svg fill="none" viewBox="0 0 60 60" height={60} width={60} xmlns="http://www.w3.org/2000/svg">
-                <rect fill="#FFF6EE" rx="8.25" height={60} width={60} />
-                <path strokeLinejoin="round" strokeLinecap="round" strokeWidth="2.25" stroke="#FF8413" fill="#FFB672" d="M34.2812 18H25.7189C21.9755 18 18.7931 20.5252 17.6294 24.0434C17.2463 25.2017 17.0547 25.7808 17.536 26.3904C18.0172 27 18.8007 27 20.3675 27H39.6325C41.1993 27 41.9827 27 42.4639 26.3904C42.9453 25.7808 42.7538 25.2017 42.3707 24.0434C41.207 20.5252 38.0246 18 34.2812 18Z" />
-                <path fill="#FFB672" d="M18 36H17.25C16.0074 36 15 34.9926 15 33.75C15 32.5074 16.0074 31.5 17.25 31.5H29.0916C29.6839 31.5 30.263 31.6754 30.7557 32.0039L33.668 33.9453C34.1718 34.2812 34.8282 34.2812 35.332 33.9453L38.2443 32.0039C38.7371 31.6754 39.3161 31.5 39.9084 31.5H42.75C43.9926 31.5 45 32.5074 45 33.75C45 34.9926 43.9926 36 42.75 36H42M18 36L18.6479 38.5914C19.1487 40.5947 20.9486 42 23.0135 42H36.9865C39.0514 42 40.8513 40.5947 41.3521 38.5914L42 36M18 36H28.5ZM42 36H39.75Z" />
-                <path strokeLinejoin="round" strokeLinecap="round" strokeWidth="2.25" stroke="#FF8413" d="M18 36H17.25C16.0074 36 15 34.9926 15 33.75C15 32.5074 16.0074 31.5 17.25 31.5H29.0916C29.6839 31.5 30.263 31.6754 30.7557 32.0039L33.668 33.9453C34.1718 34.2812 34.8282 34.2812 35.332 33.9453L38.2443 32.0039C38.7371 31.6754 39.3161 31.5 39.9084 31.5H42.75C43.9926 31.5 45 32.5074 45 33.75C45 34.9926 43.9926 36 42.75 36H42M18 36L18.6479 38.5914C19.1487 40.5947 20.9486 42 23.0135 42H36.9865C39.0514 42 40.8513 40.5947 41.3521 38.5914L42 36M18 36H28.5M42 36H39.75" />
-                <path strokeLinejoin="round" strokeLinecap="round" strokeWidth={3} stroke="#FF8413" d="M34.512 22.5H34.4982" />
-                <path strokeLinejoin="round" strokeLinecap="round" strokeWidth="2.25" stroke="#FF8413" d="M27.75 21.75L26.25 23.25" />
-              </svg>
-              <div>
-                <span>Cheese Burger</span>
-                <p>Extra Spicy</p>
-                <p>No mayo</p>
-              </div>
-              <div className="quantity">
-                <button>
-                  <svg fill="none" viewBox="0 0 24 24" height={14} width={14} xmlns="http://www.w3.org/2000/svg">
-                    <path strokeLinejoin="round" strokeLinecap="round" strokeWidth="2.5" stroke="#47484b" d="M20 12L4 12" />
-                  </svg>
-                </button>
-                <label>2</label>
-                <button>
-                  <svg fill="none" viewBox="0 0 24 24" height={14} width={14} xmlns="http://www.w3.org/2000/svg">
-                    <path strokeLinejoin="round" strokeLinecap="round" strokeWidth="2.5" stroke="#47484b" d="M12 4V20M20 12H4" />
-                  </svg>
-                </button>
-              </div>
-              <label className="price small">$23.99</label>
-            </div>
+            {order?.dishes && order?.dishes.length > 0 &&
+              order?.dishes.map((dish) => (
+                <DishItem setOrder={setOrder} dish={dish}  />
+              ))}
           </div>
         </div>
         <div className="card coupons">
           <label className="title">Apply coupons</label>
           <form className="form">
-            <input type="text" placeholder="Apply your coupons here" className="input_field" />
+            <input
+              type="text"
+              placeholder="Apply your coupons here"
+              className="input_field"
+            />
             <button>Apply</button>
           </form>
         </div>
@@ -49,21 +87,21 @@ const CheckOutForm = () => {
           <label className="title">Checkout</label>
           <div className="details">
             <span>Your cart subtotal:</span>
-            <span>47.99$</span>
+            <span>${order.total}</span>
             <span>Discount through applied coupons:</span>
-            <span>3.99$</span>
-            <span>Shipping fees:</span>
-            <span>4.99$</span>
+            <span>$0.00</span>
           </div>
           <div className="checkout--footer">
-            <label className="price"><sup>$</sup>57.99</label>
+            <label className="price">
+              <sup>$</sup>{order.total}
+            </label>
             <button className="checkout-btn">Checkout</button>
           </div>
         </div>
       </div>
     </StyledWrapper>
   );
-}
+};
 
 const StyledWrapper = styled.div`
   .master-container {
@@ -74,8 +112,13 @@ const StyledWrapper = styled.div`
 
   .card {
     width: 400px;
-    background: #FFFFFF;
-    box-shadow: 0px 187px 75px rgba(0, 0, 0, 0.01), 0px 105px 63px rgba(0, 0, 0, 0.05), 0px 47px 47px rgba(0, 0, 0, 0.09), 0px 12px 26px rgba(0, 0, 0, 0.1), 0px 0px 0px rgba(0, 0, 0, 0.1);
+    background: #ffffff;
+    box-shadow:
+      0px 187px 75px rgba(0, 0, 0, 0.01),
+      0px 105px 63px rgba(0, 0, 0, 0.05),
+      0px 47px 47px rgba(0, 0, 0, 0.09),
+      0px 12px 26px rgba(0, 0, 0, 0.1),
+      0px 0px 0px rgba(0, 0, 0, 0.1);
   }
 
   .title {
@@ -206,8 +249,10 @@ const StyledWrapper = styled.div`
     gap: 10px;
     width: 100%;
     height: 36px;
-    background: linear-gradient(180deg, #4480FF 0%, #115DFC 50%, #0550ED 100%);
-    box-shadow: 0px 0.5px 0.5px #EFEFEF, 0px 1px 0.5px rgba(239, 239, 239, 0.5);
+    background: linear-gradient(180deg, #4480ff 0%, #115dfc 50%, #0550ed 100%);
+    box-shadow:
+      0px 0.5px 0.5px #efefef,
+      0px 1px 0.5px rgba(239, 239, 239, 0.5);
     border-radius: 5px;
     border: 0;
     font-style: normal;
@@ -259,7 +304,7 @@ const StyledWrapper = styled.div`
   .price {
     position: relative;
     font-size: 22px;
-    color: #2B2B2F;
+    color: #2b2b2f;
     font-weight: 900;
   }
 
@@ -271,7 +316,7 @@ const StyledWrapper = styled.div`
     width: fit-content;
     position: absolute;
     font-size: 11px;
-    color: #5F5D6B;
+    color: #5f5d6b;
     bottom: 5px;
     display: inline-block;
   }
@@ -283,8 +328,10 @@ const StyledWrapper = styled.div`
     align-items: center;
     width: 150px;
     height: 36px;
-    background: linear-gradient(180deg, #4480FF 0%, #115DFC 50%, #0550ED 100%);
-    box-shadow: 0px 0.5px 0.5px #EFEFEF, 0px 1px 0.5px rgba(239, 239, 239, 0.5);
+    background: linear-gradient(180deg, #4480ff 0%, #115dfc 50%, #0550ed 100%);
+    box-shadow:
+      0px 0.5px 0.5px #efefef,
+      0px 1px 0.5px rgba(239, 239, 239, 0.5);
     border-radius: 7px;
     border: 0;
     outline: none;
@@ -292,6 +339,7 @@ const StyledWrapper = styled.div`
     font-size: 13px;
     font-weight: 600;
     transition: all 0.3s cubic-bezier(0.15, 0.83, 0.66, 1);
-  }`;
+  }
+`;
 
 export default CheckOutForm;

@@ -5,8 +5,9 @@ import App from './App.tsx'
 import Test from './pages/Test.tsx'
 import { createBrowserRouter, createRoutesFromElements, Route, RouterProvider } from 'react-router-dom'
 import { AlertProvider } from './context/AlertContext.tsx'
-import { AdminLayout, Dashboard, EditMenu, Orders } from './pages/admin'
-import { NotFoundPage } from './pages'
+import { NotFoundPage, UserOrders, AdminLayout, Dashboard, EditMenu, Orders } from './pages'
+import { ModalProvider } from './context/ModalContext.tsx'
+import { CartProvider } from './context/CartContext.tsx'
 
 
 const router = createBrowserRouter(
@@ -17,7 +18,10 @@ const router = createBrowserRouter(
         <Route path="edit-menu" element={<EditMenu />} />
         <Route path="orders" element={<Orders />} />
       </Route>
-      <Route path="" element={<App />} />
+      <Route path="" element={<App />}>
+         <Route path="/:categoryId" />
+      </Route>
+      <Route path="orders" element={<UserOrders />} />
       <Route path="test" element={<Test />} />
       <Route path="*" element={<NotFoundPage />} />
     </Route>
@@ -27,7 +31,11 @@ const router = createBrowserRouter(
 createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <AlertProvider>
-      <RouterProvider router={router} />
+      <ModalProvider>
+        <CartProvider>
+          <RouterProvider router={router} />
+        </CartProvider>
+      </ModalProvider>
     </AlertProvider>
   </React.StrictMode>,
 )
