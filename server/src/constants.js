@@ -1,1 +1,1 @@
-export const DB_NAME = "ECommerce"
+export const DB_NAME = "QRder"
