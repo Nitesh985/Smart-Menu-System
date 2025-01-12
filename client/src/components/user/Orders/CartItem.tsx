@@ -24,9 +24,9 @@ function CartItem({ ...item }) {
     <>
       <Image imageUrl={item?.image?.url} />
       <h2 className="font-bold w-[100px] lg:w-[250px] text-center">{item.name}</h2>
-        <Button className="add-button" onClick={addQuantity}>+</Button>
-        <p>{item.quantity}</p>
         <Button className="sub-button" onClick={subQuantity}>-</Button>
+        <p>{item.quantity}</p>
+        <Button className="add-button" onClick={addQuantity}>+</Button>
       <Button
         className="cursor-pointer hover:text-red-600 bg-slate-500 rounded-full bg-opacity-10 border-none"
         onClick={() => removeFromCart(item._id)}

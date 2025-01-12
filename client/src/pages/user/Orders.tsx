@@ -1,10 +1,11 @@
-import { FaCartShopping } from "react-icons/fa6";
+import { FaArrowLeft, FaCartShopping } from "react-icons/fa6";
 import useCartContext from "../../context/CartContext";
-import { Button, Image, Input, Select } from "../../components";
+import { Button, Image, Input, Loading, Select } from "../../components";
 import { FaTrashAlt } from "react-icons/fa";
 import CartItem from "../../components/user/Orders/CartItem";
 import { useState } from "react";
 import { makeOrder } from "../../api/order";
+import { Link } from "react-router-dom";
 
 const options = [
   "A1",
@@ -27,9 +28,10 @@ const options = [
 
 function Orders() {
   const { cartItems, getCartTotal } = useCartContext();
-  const [tip, setTip] = useState("");
-  const [type, setType] = useState(null);
-  const [table_no, setTableNo] = useState(null);
+  const [note, setNote] = useState("");
+  const [orderType, setOrderType] = useState("Delivery");
+  const [table_no, setTableNo] = useState("A1");
+  const [loading, setLoading] = useState(false)
 
   if (!cartItems.length)
     return (
@@ -40,26 +42,36 @@ function Orders() {
     );
 
   function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
-      event.preventDefault()
-      const dishes = cartItems.map(item=>({_id:item._id, quantity:item.quantity, price:item.price}))
-      const data = {
-        table_no,
-        orderType: type,
-        note: tip,
-        orderItems: dishes
-      } 
-      makeOrder(data)
-      .then(res=>
-        console.log(res.data)
-      )
-      .then(error=>{
-        console.log(error)
+    event.preventDefault();
+    setLoading(true)
+    const orderItems = cartItems.map((item) => ({
+      _id: item._id,
+      quantity: item.quantity,
+      price: item.price,
+    }));
+    const data = {
+      table_no,
+      orderType,
+      note,
+      orderItems,
+    };
+    makeOrder(data)
+      .then((res) => console.log(res.data))
+      .catch((error) => {
+        console.log(error);
       })
-
+      .finally(()=>setLoading(false))
+      
   }
 
   return (
     <div className="flex flex-col">
+      <Link to="/" >
+        <div className="mt-6 p-3 font-garamond w-24 flex items-center justify-center rounded-full bg-orange-500 text-white gap-1 hover:gap-2 font-medium ">
+          <FaArrowLeft />
+          <p>Back</p>
+        </div>
+      </Link>
       <div className="mb-3 mt-4 flex w-full items-center justify-center text-4xl">
         <FaCartShopping className="text-4xl" />
         <h1 className="montserrat-title ml-3 text-center">Cart</h1>
@@ -89,26 +101,30 @@ function Orders() {
         >
           Table No
         </Select>
-        <Select 
-          name="type"
-          value={type}
-          onChange={(e)=>setType(e.currentTarget.value)}
+        <Select
+          name="orderType"
+          value={orderType}
+          onChange={(e) => setOrderType(e.currentTarget.value)}
           options={["Delivery", "Take Away", "Dine-In"]}
           className="mt-5 rounded-3xl indent-2"
         />
         <Input
-          name="tip"
-          placeholder="Tips"
-          value={tip}
+          name="note"
+          placeholder="Note"
+          value={note}
           inputStyles="w-full mt-5 rounded-3xl indent-2"
-          onChange={(e) => setTip(e.currentTarget.value)}
+          onChange={(e) => setNote(e.currentTarget.value)}
         />
       </div>
       <form onSubmit={handleSubmit}>
-        <Button type="submit" className="green-submit-button mt-6 mb-6 bottom-5 w-full">
+        <Button
+          type="submit"
+          className="green-submit-button bottom-5 mb-6 mt-6 w-full"
+        >
           Check Out
         </Button>
       </form>
+      {loading && <Loading />}
     </div>
   );
 }

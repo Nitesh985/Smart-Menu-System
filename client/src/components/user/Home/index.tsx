@@ -45,7 +45,7 @@ function Home() {
   return (
     <main className="mt-2 w-full">
       <div className="mb-3 border border-t border-white border-opacity-20"></div>
-      <div className="flex h-20 ml-3 items-center space-x-5 overflow-auto border-white border-opacity-20">
+      <div className="sticky border-b-slate-800 top-0 scrollbar-hide flex h-28 ml-3 items-center space-x-5 overflow-auto bg-white z-20">
         <Categories />
       </div>
       <div className="mb-3 border border-t border-white border-opacity-20 z-10"></div>

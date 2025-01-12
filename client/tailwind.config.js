@@ -30,7 +30,9 @@ export default {
       },
     },
   },
-  plugins: [daisyui],
+  plugins: [daisyui,
+    require('tailwind-scrollbar-hide')
+  ],
   daisyui: {
     themes: ["lofi", "winter", "night", "black", "autumn"],
   },

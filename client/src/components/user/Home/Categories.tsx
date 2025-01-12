@@ -26,12 +26,12 @@ function Categories() {
             to={`/${category._id}`}
             className={({ isActive }) =>
               isActive
-                ? "flex items-center justify-center rounded-full border-2 border-white border-opacity-40 group"
-                : "flex items-center justify-center rounded-full border-2 border-white border-opacity-0 opacity-45 group"
+                ? "flex items-center justify-center rounded-full border-[6px] border-green-400"
+                : "flex items-center justify-center rounded-full border-[6px] border-transparent group"
             }
           >
             <CategoryItem {...category} />
-            <div className="group-hover:flex hidden opacity-45 absolute mt-20 bg-slate-800 rounded-xl font-garamond w-20 justify-center items-center" >{category.name}</div>
+            <div className=" absolute mt-24 rounded-xl font-semibold w-20 flex justify-center items-center" >{category.name}</div>
           </NavLink>
         ))}
       {loading && <Loading />}

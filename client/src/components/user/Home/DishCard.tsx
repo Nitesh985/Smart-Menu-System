@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Button, Image } from "../../";
 import useCartContext from "../../../context/CartContext";
+import { FaHeart, FaHeartBroken, FaRegHeart } from "react-icons/fa";
 
 export interface DishProps {
   _id: string;
@@ -16,10 +17,11 @@ export interface DishProps {
 function DishCard({ _id, name, image, price }: DishProps) {
   const { addToCart, editCartItem, getDishQuantity } = useCartContext();
   const [quantity, setQuantity] = useState<number>(getDishQuantity(_id) || 0);
+  const [favorite, setFavorite] = useState(false);
 
   const handleCartAdd = () => {
     setQuantity(1);
-    addToCart({ _id, name, image, price, quantity:1 });
+    addToCart({ _id, name, image, price, quantity: 1 });
   };
 
   const addQuantity = () => {
@@ -35,25 +37,27 @@ function DishCard({ _id, name, image, price }: DishProps) {
   }, [quantity]);
 
   return (
-    <div className="group mb-10">
+    <div className="group mb-10 border-5">
+      {/* <div
+        onClick={() => setFavorite((prevState) => !prevState)}
+        className="absolute z-10 ml-36 mt-4 flex cursor-pointer btn-ghost items-center justify-center rounded-full bg-opacity-70 text-4xl text-red-500"
+      >
+        {favorite ? <FaHeart /> : <FaRegHeart className="bg-neutral bg-opacity-55 rounded-full text-white opacity-50" />}
+      </div> */}
       {image && <Image imageUrl={image.url} className="w-48 rounded-md" />}
-      <div className="flex flex-col items-center p-5">
+      <div className="flex flex-col items-center p-1">
         <h1 className="text-2xl font-bold">{name}</h1>
-        <h2 className="text-xl text-green-600 font-semibold text-center" >${price}</h2>
+        <h2 className="text-center text-xl font-semibold text-green-600">
+          ${price}
+        </h2>
         {quantity ? (
-          <div className="mt-3 p-1 flex w-full items-center justify-between text-white">
-            <Button
-              className="add-button"
-              onClick={addQuantity}
-            >
-              +
-            </Button>
-            <p className="text-2xl">{quantity}</p>
-            <Button
-              className="sub-button"
-              onClick={subQuantity}
-            >
+          <div className="mt-3 flex w-full items-center justify-between p-4 text-white">
+            <Button className="sub-button" onClick={subQuantity}>
               -
+            </Button>
+            <p className="text-2xl font-bold text-gray-700">{quantity}</p>
+            <Button className="add-button" onClick={addQuantity}>
+              +
             </Button>
           </div>
         ) : (
