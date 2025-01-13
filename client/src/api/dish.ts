@@ -7,6 +7,7 @@ const foodApi = axios.create({
 export interface Dish{
     name: string;
     price: number;
+    quantity: number;
     description?: string;
     image?: File| undefined;
     category: string;

@@ -5,6 +5,7 @@ import { MdOutlineFoodBank } from "react-icons/md";
 import { RiEditCircleFill } from "react-icons/ri";
 import { HiOutlineLogout } from "react-icons/hi";
 import { MdSpaceDashboard } from "react-icons/md";
+import { useEffect } from "react";
 
 
 const itemsList: SideBarItemsProps[] = [
@@ -15,6 +16,8 @@ const itemsList: SideBarItemsProps[] = [
 ];
 
 function AdminLayout() {
+
+
   return (
     <>
       <SideBar itemsList={itemsList} >

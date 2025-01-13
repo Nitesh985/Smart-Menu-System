@@ -42,7 +42,22 @@ const makeOrder = asyncHandler(async (req, res)=> {
 })
 
 const getAllOrders = asyncHandler(async (req, res)=> {
-    const orders = await Order.find({})
+    const orders = await Order.aggregate([
+        {
+            $lookup:{
+                from:"dishes",
+                localField:"orderItems._id",
+                foreignField:"_id",
+                as:"dishes"
+            }
+        },
+        {
+            $merge:{
+                into:orderItems,
+                on:"_id"
+            }
+        }
+    ])
 
     // const updatedOrders = orders.map((order)=>order.orderItems.map(async item => {
     //         return await Dish.findById(item._id)
@@ -57,9 +72,16 @@ const getAllOrders = asyncHandler(async (req, res)=> {
 const getOrders = asyncHandler(async (req, res)=>{
     const {orderType} = req.query
     
-    const orders = await Order.find({
-        orderType
-    })
+    const orders = await Order.aggregate([
+        {
+            $lookup:{
+                from:"dishes",
+                localField:"orderItems._id",
+                foreignField:"_id",
+                as:"orderItems"
+            }
+        }
+    ]) 
 
     return res.json(
         new ApiResponse(200, orders, "The orders fetched successfully")

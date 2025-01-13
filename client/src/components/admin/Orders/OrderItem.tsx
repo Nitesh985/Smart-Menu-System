@@ -4,7 +4,7 @@ import { Button } from "../../";
 import { Dish } from "../../../api/dish";
 
 export interface OrderItemProps {
-  _id: number;
+  _id: string;
   table_no: string;
   orderType: {
     type: string;
@@ -15,7 +15,7 @@ export interface OrderItemProps {
   totalPrice: number;
 }
 
-function OrderItem({ table_no, totalPrice, orderType, note }: OrderItemProps) {
+function OrderItem({ table_no, totalPrice, orderType, note, orderItems }: OrderItemProps) {
   return (
     <div className="mt-9 flex h-[300px] w-[300px] items-center justify-center rounded-3xl border bg-orange-500 transition-all duration-300 ease-linear hover:scale-105">
       <div className="absolute mr-5 mt-5 h-[300px] w-[300px] rounded-3xl bg-orange-400">
@@ -25,6 +25,9 @@ function OrderItem({ table_no, totalPrice, orderType, note }: OrderItemProps) {
         <div className="p-12">
           <p className="text-lg text-white">Total: ${totalPrice}</p>
           <p className="text-lg text-white">Type: {orderType}</p>
+          <p className="text-lg text-white flex" >Dishes: {orderItems.length>0 && orderItems.map(item=>(
+            <div>{item.name}</div>
+          ))} </p>
           <p className="text-lg text-white">Tip: {note}</p>
         </div>
       </div>
