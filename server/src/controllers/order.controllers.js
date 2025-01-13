@@ -49,8 +49,53 @@ const getAllOrders = asyncHandler(async (req, res)=> {
                 localField:"orderItems._id",
                 foreignField:"_id",
                 as:"dishes"
+            },
+        },
+        {
+            "$project": {
+                "_id":1,
+                "table_no":1,
+                "orderType":1,
+                "note":1,
+                "totalPrice":1,
+              "orderItems": {
+                "$map": {
+                  "input": "$dishes",
+                  "in": {
+                    "$let": {
+                      "vars": {
+                        "m": {
+                          "$arrayElemAt": [
+                            {
+                              "$filter": {
+                                "input": "$orderItems",
+                                "cond": {
+                                  "$eq": [
+                                    "$$mb._id",
+                                    "$$this._id"
+                                  ]
+                                },
+                                "as": "mb"
+                              }
+                            },
+                            0
+                          ]
+                        }
+                      },
+                      "in": {
+                        "$mergeObjects": [
+                          "$$this",
+                          {
+                            "quantity": "$$m.quantity"
+                          }
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
             }
-        }
+          }
     ])
 
     // const updatedOrders = orders.map((order)=>order.orderItems.map(async item => {
