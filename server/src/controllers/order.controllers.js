@@ -53,7 +53,7 @@ const getAllOrders = asyncHandler(async (req, res)=> {
         },
         {
             $merge:{
-                into:orderItems,
+                into:"orderItems",
                 on:"_id"
             }
         }
