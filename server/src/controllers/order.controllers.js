@@ -50,12 +50,6 @@ const getAllOrders = asyncHandler(async (req, res)=> {
                 foreignField:"_id",
                 as:"dishes"
             }
-        },
-        {
-            $merge:{
-                into:"orderItems",
-                on:"_id"
-            }
         }
     ])
 
