@@ -109,17 +109,68 @@ const getAllOrders = asyncHandler(async (req, res)=> {
 })
 
 const getOrders = asyncHandler(async (req, res)=>{
-    const {orderType} = req.query
-    
-    const orders = await Order.aggregate([
-        {
-            $lookup:{
-                from:"dishes",
-                localField:"orderItems._id",
-                foreignField:"_id",
-                as:"orderItems"
-            }
+  const {orderType} = req.params
+
+  const orders = await Order.aggregate([
+    {
+      $match:{
+        orderType
+      }
+    },
+    {
+        $lookup:{
+            from:"dishes",
+            localField:"orderItems._id",
+            foreignField:"_id",
+            as:"dishes"
         }
+    },
+    {
+      $project: {
+          "_id":1,
+          "table_no":1,
+          "orderType":1,
+          "note":1,
+          "totalPrice":1,
+        "orderItems": {
+          "$map": {
+            "input": "$dishes",
+            "in": {
+              "$let": {
+                "vars": {
+                  "m": {
+                    "$arrayElemAt": [
+                      {
+                        "$filter": {
+                          "input": "$orderItems",
+                          "cond": {
+                            "$eq": [
+                              "$$mb._id",
+                              "$$this._id"
+                            ]
+                          },
+                          "as": "mb"
+                        }
+                      },
+                      0
+                    ]
+                  }
+                },
+                "in": {
+                  "$mergeObjects": [
+                    "$$this",
+                    {
+                      "quantity": "$$m.quantity"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+        
     ]) 
 
     return res.json(
@@ -128,8 +179,24 @@ const getOrders = asyncHandler(async (req, res)=>{
 })
 
 
+const deleteOrder = asyncHandler(async(req, res)=>{
+  const {orderId} = req.params
+
+  const deleteOrder = await Order.deleteOne({_id:orderId})
+
+  if (!deleteOrder){
+    throw new ApiError(500, "Internal Server error while deleting the order")
+  }
+
+  return res.status(200).json(
+    new ApiResponse(200, null, `The order by order id ${orderId} is successfully deleted`)
+  )
+
+})
+
 export {
     makeOrder,
     getAllOrders,
-    getOrders
+    getOrders,
+    deleteOrder
 }
