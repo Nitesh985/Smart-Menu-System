@@ -10,6 +10,7 @@ import OrderDetails from "../components/admin/Orders/OrderDetails";
 // user
 import Home from './user/Home'
 import UserOrders from './user/Orders'
+import DishDescription from './user/DishDescription'
 
 export {
     // admin
@@ -24,4 +25,5 @@ export {
     // user
     Home,
     UserOrders,
+    DishDescription
 }
