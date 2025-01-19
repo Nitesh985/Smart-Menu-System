@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { getOrders } from "../../../api/order"
+import { getOrders, getOrdersByType } from "../../../api/order"
 import { OrderItemProps } from './OrderItem';
 import OrderDetailItem from "./OrderDetailItem";
 import { Loading, SelectOptions } from "../..";
@@ -13,8 +13,8 @@ function OrderDetails() {
   const [ordersUpdated, setOrdersUpdated] = useState(false)
 
   useEffect(()=>{
-    setLoading(true)
-    selectedType==="All"?getOrders():getOrdersByType(selectedType)
+    setLoading(true);
+    (selectedType==="All"?getOrders():getOrdersByType(selectedType))
     .then(res=>{
       setOrders(res.data)
     })
@@ -30,6 +30,7 @@ function OrderDetails() {
           className="flex bg-black"
           optionStyles="bg-black text-white"
           options={options}
+          onChange={(e)=>{setSelectedType(e.currentTarget.value)}}
         />
       </div>
       <div className="mt-10 " >

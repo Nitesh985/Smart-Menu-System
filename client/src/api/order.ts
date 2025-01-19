@@ -41,9 +41,9 @@ const getOrders = async () => {
     }
 }
 
-const getOrdersByType = async () => {
+const getOrdersByType = async (orderType:string) => {
     try {
-        const response = await orderApi.get('/get-orders/');
+        const response = await orderApi.get(`/get-orders/${orderType}`);
         return response.data;
     } catch (error) {
         if (error instanceof axios.AxiosError) {
@@ -66,6 +66,6 @@ const deleteOrder = async (orderId:string) => {
 }
     
 
-export { makeOrder , getOrders, deleteOrder };
+export { makeOrder , getOrders, deleteOrder, getOrdersByType };
 
 
