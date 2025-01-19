@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Button, Image } from "../../";
 import useCartContext from "../../../context/CartContext";
 import { FaHeart, FaHeartBroken, FaRegHeart } from "react-icons/fa";
+import useDishContext from "../../../context/SearchContext";
 
 export interface DishProps {
   _id: string;
@@ -14,8 +15,23 @@ export interface DishProps {
   description: string;
 }
 
+const HighlightQuery = ({query, word}:{query:string, word:string}) => {
+    if (!query || !word.includes(query)) return <span>{word}</span>;
+
+    return <span className="font-medium">
+      {word.split(query).map((part, index) => (
+        <span key={index}>
+          {part}
+          {index < word.split(query).length - 1 && <span className="text-green-500">{query}</span>}
+        </span>
+      ))}
+    </span>;
+
+}
+
 function DishCard({ _id, name, image, price }: DishProps) {
   const { addToCart, editCartItem, getDishQuantity } = useCartContext();
+  const {searchedQuery} = useDishContext()
   const [quantity, setQuantity] = useState<number>(getDishQuantity(_id) || 0);
   const [favorite, setFavorite] = useState(false);
 
@@ -46,7 +62,9 @@ function DishCard({ _id, name, image, price }: DishProps) {
       </div> */}
       {image && <Image imageUrl={image.url} className="w-44 rounded-md" />}
       <div className="flex flex-col items-center p-1">
-        <h1 className="text-2xl font-bold">{name}</h1>
+        <h1 className="text-2xl font-bold">
+          <HighlightQuery query={searchedQuery} word={name}  />
+        </h1>
         <h2 className="text-center text-xl font-semibold text-green-600">
           ${price}
         </h2>

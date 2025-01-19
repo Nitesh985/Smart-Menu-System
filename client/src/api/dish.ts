@@ -87,7 +87,7 @@ const deleteDish = async (dishId: string) => {
 
 const searchDish = async (s:string)=>{
     try{
-        const response = await foodApi.get(`/search-dish/s=${s}`);
+        const response = await foodApi.get(`/search-dish/s=?q=${s}`);
         return response.data;
     }catch(error){
         console.error(error)

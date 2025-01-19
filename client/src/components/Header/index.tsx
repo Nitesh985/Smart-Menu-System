@@ -11,7 +11,7 @@ function Header() {
       <Link to="/">
         <Image imageUrl={pizzaLogo} alt="web-logo" className='border rounded-full border-opacity-45 border-white'  />
       </Link>
-      <div className="w-4/6" >
+      <div className="w-9/12" >
         <SearchBar/>
       </div>
     </header>

@@ -7,6 +7,9 @@ import { Server } from "socket.io";
 
 // const httpServer = http.createServer(app);
 
+
+
+
 connectToDB()
   .then(() => {
     app.get("/", (req, res) => {

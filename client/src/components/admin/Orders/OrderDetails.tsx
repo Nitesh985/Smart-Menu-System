@@ -14,7 +14,7 @@ function OrderDetails() {
 
   useEffect(()=>{
     setLoading(true)
-    selectedType==="All"?getOrders():getOrdersBy
+    selectedType==="All"?getOrders():getOrdersByType(selectedType)
     .then(res=>{
       setOrders(res.data)
     })

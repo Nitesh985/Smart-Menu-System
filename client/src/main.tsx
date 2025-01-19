@@ -22,6 +22,7 @@ import {
 import { ModalProvider } from "./context/ModalContext.tsx";
 import { CartProvider } from "./context/CartContext.tsx";
 import { OrderList } from "./components/admin";
+import { SearchProvider } from "./context/SearchContext.tsx";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -47,11 +48,13 @@ const router = createBrowserRouter(
 createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <AlertProvider>
-      <ModalProvider>
-        <CartProvider>
-          <RouterProvider router={router} />
-        </CartProvider>
-      </ModalProvider>
+      <SearchProvider>
+        <ModalProvider>
+          <CartProvider>
+            <RouterProvider router={router} />
+          </CartProvider>
+        </ModalProvider>
+      </SearchProvider>
     </AlertProvider>
   </React.StrictMode>,
 );

@@ -41,6 +41,19 @@ const getOrders = async () => {
     }
 }
 
+const getOrdersByType = async () => {
+    try {
+        const response = await orderApi.get('/get-orders/');
+        return response.data;
+    } catch (error) {
+        if (error instanceof axios.AxiosError) {
+            throw new Error(`Error getting orders: ${error.message}`);
+        }
+        return null;
+    }
+}
+
+
 const deleteOrder = async (orderId:string) => {
     try {
         await orderApi.delete(`/delete-order/${orderId}`)

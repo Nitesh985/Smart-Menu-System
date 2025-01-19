@@ -1,7 +1,20 @@
+import { useEffect, useState } from "react";
+import { searchDish } from "../api/dish";
+import useSearchContext from "../context/SearchContext";
+
 function SearchBar() {
+  const { setDishes, searchedQuery, setSearchedQuery } = useSearchContext()
+  const handleChange = (e) => {
+    setSearchedQuery(e.target.value);
+    searchDish(e.target.value)
+    .then(res=>setDishes(res.data))
+  };
+
+
+
   return (
     <label className="input input-bordered flex items-center gap-2">
-      <input type="text" className="grow" placeholder="Search" />
+      <input type="text" className="grow" placeholder="Search" value={searchedQuery} name="search" onChange={handleChange} />
       <svg
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 16 16"

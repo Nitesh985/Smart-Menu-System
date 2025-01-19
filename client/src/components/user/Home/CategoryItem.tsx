@@ -11,6 +11,7 @@ export interface CategoryProps{
   }
 }
 
+
 function CategoryItem({image}:CategoryProps) {
   return (
       <Image imageUrl={image.url} className="w-16 h-16 rounded-full" />

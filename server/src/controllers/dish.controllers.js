@@ -165,8 +165,8 @@ const updateDishItem = asyncHandler(async (req, res)=>{
 });
 
 const searchDishItem = asyncHandler(async(req, res)=>{
-    const { s } = req.query
-    const query = s.toLowerCase().trim()
+    const { q } = req.query
+    const query = q.toLowerCase().trim()
 
     const foodItems = await Dish.aggregate([
         {
@@ -190,12 +190,9 @@ const searchDishItem = asyncHandler(async(req, res)=>{
         }
     ])
 
-    if (!foodItems.length) {
-        throw new ApiError(404, "No food items found with the given keyword");
-    }
     
     return res.json(
-        new ApiResponse(200, foodItems, "Food items found with the given keyword")
+        new ApiResponse(200, foodItems, "Food items with the given keyword")
     );
 });
 
