@@ -18,6 +18,7 @@ import {
   EditMenu,
   Orders,
   OrderDetails,
+  DishDescription,
 } from "./pages";
 import { ModalProvider } from "./context/ModalContext.tsx";
 import { CartProvider } from "./context/CartContext.tsx";
@@ -38,6 +39,7 @@ const router = createBrowserRouter(
       <Route path="" element={<App />}>
         <Route path="/:categoryId" />
       </Route>
+      <Route path="d/:dishId" element={<DishDescription />} />
       <Route path="orders" element={<UserOrders />} />
       <Route path="test" element={<Test />} />
       <Route path="*" element={<NotFoundPage />} />
