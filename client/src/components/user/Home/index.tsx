@@ -58,7 +58,8 @@ function Home() {
         <Button className="green-submit-button">Non-Veg</Button>
         <Button className="green-submit-button">Mixed</Button>
       </div> */}
-      <section className="-mx-5 flex flex-wrap justify-between gap-y-14 p-8">
+      </div>
+      <section className="-mx-5 flex flex-wrap justify-between gap-y-14 py-6 px-4">
         {dishes.length > 0 &&
           dishes.map((dish) => 
             <DishCard key={dish._id} {...dish} />

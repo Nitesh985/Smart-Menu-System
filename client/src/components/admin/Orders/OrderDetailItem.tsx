@@ -1,14 +1,27 @@
-import React from "react";
+import React, { useState } from "react";
 import { PiPicnicTableFill } from "react-icons/pi";
 import { OrderItemProps } from "./OrderItem";
-import { Button } from "../..";
+import { Button, Loading } from "../..";
 import { TiTick } from "react-icons/ti";
 import { RxCross2 } from "react-icons/rx";
+import { deleteOrder } from "../../../api/order";
 
-function OrderDetailItem({ table_no, orderItems, totalPrice }: OrderItemProps) {
+interface OrderDetailItemProps extends OrderItemProps{
+  setOrdersUpdated: React.Dispatch<React.SetStateAction<boolean>>
+}
 
-  const handleRejectBtn = async () => {
-     
+function OrderDetailItem({ _id, table_no, orderItems, totalPrice, setOrdersUpdated }: OrderDetailItemProps) {
+  const [loading, setLoading] = useState(false)
+
+
+  const handleRejectBtn = () => {
+
+    setLoading(true)
+     deleteOrder(_id)
+     .then(()=>setOrdersUpdated(prevState=>!prevState))
+     .finally(()=>{
+      setLoading(false)
+    })
   }
 
   return (
@@ -38,12 +51,12 @@ function OrderDetailItem({ table_no, orderItems, totalPrice }: OrderItemProps) {
             <TiTick size={25} />
             <p className="font-bold" >Accept</p>
           </Button>
-          <Button className="red-reject-button px-8">
+          <Button onClick={handleRejectBtn} className="red-reject-button px-8">
             <RxCross2 size={25} />
             <p className="font-bold" >Reject</p>
           </Button>
         </div>
-      </div>
+      </div> 
     </div>
   );
 }
