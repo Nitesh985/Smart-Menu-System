@@ -46,6 +46,8 @@ const Input = ({className}:{className?:string}) => {
   );
 }
 
+
+
 const StyledWrapper = styled.div`
   .grid {
     background-image: linear-gradient(to right, #0f0f10 1px, transparent 1px),

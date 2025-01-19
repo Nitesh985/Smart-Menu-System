@@ -5,7 +5,7 @@ import DishCard from "./DishCard";
 import { getAllDishes } from "../../../api/dish";
 import { DishProps } from "./DishCard";
 import { getDishByCategory } from "../../../api/category";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 
 const images = [
   "https://images.pexels.com/photos/2983101/pexels-photo-2983101.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
@@ -53,20 +53,18 @@ function Home() {
         <Carousel images={images} />
       </div>
       <div className="divider"></div>
-      <div className="flex space-x-2">
+      {/* <div className="flex space-x-2">
         <Button className="green-submit-button">Veg</Button>
         <Button className="green-submit-button">Non-Veg</Button>
         <Button className="green-submit-button">Mixed</Button>
+      </div> */}
       </div>
       <section className="-mx-5 flex flex-wrap justify-between gap-y-14 py-6 px-4">
         {dishes.length > 0 &&
-          dishes.map((dish) => <DishCard key={dish._id} {...dish} />)}
+          dishes.map((dish) => 
+            <DishCard key={dish._id} {...dish} />
+          )}
       </section>
-      <aside>
-        <div className="lg:tooltip lg:tooltip-open lg:tooltip-bottom" data-tip="hello">
-          <button className="btn">Bottom</button>
-        </div>
-      </aside>
       {loading && <Loading />}
     </main>
   );

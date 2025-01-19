@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Button, Image } from "../../";
 import useCartContext from "../../../context/CartContext";
 import { FaHeart, FaHeartBroken, FaRegHeart } from "react-icons/fa";
+import { Link } from "react-router-dom";
 
 export interface DishProps {
   _id: string;
@@ -44,7 +45,9 @@ function DishCard({ _id, name, image, price }: DishProps) {
       >
         {favorite ? <FaHeart /> : <FaRegHeart className="bg-neutral bg-opacity-55 rounded-full text-white opacity-50" />}
       </div> */}
-      {image && <Image imageUrl={image.url} className="w-44 rounded-md" />}
+      {image && <Link to={`/d/${_id}`}>
+        <Image imageUrl={image.url} className="w-48 rounded-md" />
+      </Link>}
       <div className="flex flex-col items-center p-1">
         <h1 className="text-2xl font-bold">{name}</h1>
         <h2 className="text-center text-xl font-semibold text-green-600">
