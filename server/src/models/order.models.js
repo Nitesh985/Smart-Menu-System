@@ -17,9 +17,13 @@ const orderItemSchema = new Schema({
 })
 
 const orderSchema = new Schema({
-    tableId:{
-        type:Schema.Types.ObjectId,
-        ref:"Table",
+    // tableId:{
+    //     type:Schema.Types.ObjectId,
+    //     ref:"Table",
+    //     required: true
+    // },
+    table_no:{
+        type:String,
         required: true
     },
     orderType: {

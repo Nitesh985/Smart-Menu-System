@@ -29,6 +29,8 @@ import Divider from './Divider';
 import HomeComponent from './user/Home'
 import Drawer from './Drawer'
 import CartButton from './CartButton'
+import SelectPayment from './SelectPayment';
+
 
 export {
     HomeComponent,
@@ -60,6 +62,7 @@ export {
     TextArea,
     FileInput,
     Table,
+    SelectPayment,
 
     // Category
     CreateCategory

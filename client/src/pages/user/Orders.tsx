@@ -1,11 +1,13 @@
 import { FaArrowLeft, FaCartShopping } from "react-icons/fa6";
 import useCartContext from "../../context/CartContext";
-import { Button, Image, Input, Loading, Select } from "../../components";
-import { FaTrashAlt } from "react-icons/fa";
+import { Button, Image, Input, Loading, Select, SelectPayment } from "../../components";
 import CartItem from "../../components/user/Orders/CartItem";
 import { useState } from "react";
 import { makeOrder } from "../../api/order";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { initiatePayment } from "../../api/payment";
+import {generateUniqueId} from 'esewajs'
+
 
 const options = [
   "A1",
@@ -26,12 +28,28 @@ const options = [
   "D4",
 ];
 
+const paymentOptions = [
+  {
+    img:"https://republicaimg.nagariknewscdn.com/shared/web/uploads/media/esewa_20200118185351.jpg",
+    label: "Esewa"
+  },
+  {
+    img:"https://i.pinimg.com/736x/02/7e/b5/027eb52220026b111177c0f4882cb662.jpg",
+    label:"Cash on Hand"
+  }
+]
+
 function Orders() {
   const { cartItems, getCartTotal } = useCartContext();
   const [note, setNote] = useState("");
   const [orderType, setOrderType] = useState("Delivery");
   const [table_no, setTableNo] = useState("A1");
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(false);
+  const [paymentType, setPaymentType] = useState("");
+  const navigate = useNavigate()
+
+  console.log(paymentType)
+
 
   if (!cartItems.length)
     return (
@@ -43,7 +61,6 @@ function Orders() {
 
   function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    setLoading(true)
     const orderItems = cartItems.map((item) => ({
       _id: item._id,
       quantity: item.quantity,
@@ -55,12 +72,25 @@ function Orders() {
       note,
       orderItems,
     };
+    const totalPrice = getCartTotal() 
+    const productId = generateUniqueId()
+
     makeOrder(data)
       .then((res) => console.log(res.data))
+      .then(()=>{
+        if (paymentType === "Esewa"){
+          initiatePayment(totalPrice, productId)
+        .then(res=>{
+          if (res){
+            window.location.href = res.url
+          }
+        })
+      }
+      })
       .catch((error) => {
         console.log(error);
       })
-      .finally(()=>setLoading(false))
+      
       
   }
 
@@ -91,6 +121,7 @@ function Orders() {
         </p>
       </div>
       <div className="divider">Select your payment methods</div>
+      <SelectPayment paymentOptions={paymentOptions} paymentType={paymentType} setPaymentType={setPaymentType} />
       <div className="p-5">
         <Select
           name="table_no"

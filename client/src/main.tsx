@@ -19,6 +19,8 @@ import {
   Orders,
   OrderDetails,
   DishDescription,
+  PaymentFailurePage,
+  PaymentSuccessPage,
 } from "./pages";
 import { ModalProvider } from "./context/ModalContext.tsx";
 import { CartProvider } from "./context/CartContext.tsx";
@@ -39,6 +41,8 @@ const router = createBrowserRouter(
       <Route path="" element={<App />}>
         <Route path="/:categoryId" />
       </Route>
+      <Route path="/payment-success" element={<PaymentSuccessPage />} />
+      <Route path="/payment-failure" element={<PaymentFailurePage />} />
       <Route path="d/:dishId" element={<DishDescription />} />
       <Route path="orders" element={<UserOrders />} />
       <Route path="test" element={<Test />} />

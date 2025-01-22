@@ -12,6 +12,10 @@ import Home from './user/Home'
 import UserOrders from './user/Orders'
 import DishDescription from './user/DishDescription'
 
+// payment
+import PaymentSuccessPage from "./payment/Success";
+import PaymentFailurePage from './payment/Failure';
+
 export {
     // admin
     AdminLayout,
@@ -25,5 +29,10 @@ export {
     // user
     Home,
     UserOrders,
-    DishDescription
+    DishDescription,
+
+    // payment
+    PaymentFailurePage,
+    PaymentSuccessPage
+
 }

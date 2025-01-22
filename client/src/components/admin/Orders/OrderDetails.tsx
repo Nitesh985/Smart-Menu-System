@@ -21,6 +21,8 @@ function OrderDetails() {
     .finally(()=>setLoading(false))
   }, [ordersUpdated])
 
+  console.log(orders)
+
 
 
   return (

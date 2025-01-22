@@ -21,11 +21,13 @@ app.use(cookieParser())
 import dishRouter from './routes/dish.routes.js'
 import orderRouter from './routes/order.routes.js'
 import categoryRouter from './routes/category.routes.js'
+import paymentRouter from './routes/payment.routes.js'
 
 
 app.use("/api/v1/dishes", dishRouter)
 app.use("/api/v1/orders", orderRouter)
 app.use("/api/v1/categories", categoryRouter)
+app.use("/api/v1/payment", paymentRouter)
 app.use("/api/v1/test", (req,res)=>{
     return res.status(200).json({
         message:"Everything is okay",
