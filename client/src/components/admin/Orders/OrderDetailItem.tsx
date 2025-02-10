@@ -10,8 +10,18 @@ interface OrderDetailItemProps extends OrderItemProps{
   setOrdersUpdated: React.Dispatch<React.SetStateAction<boolean>>
 }
 
-function OrderDetailItem({ _id, table_no, orderItems, totalPrice, setOrdersUpdated }: OrderDetailItemProps) {
+function OrderDetailItem({ _id, table_no, orderItems, totalPrice, setOrdersUpdated, isEditing }: OrderDetailItemProps) {
   const [loading, setLoading] = useState(false)
+
+  const handleAcceptBtn = () => {
+    setLoading(true)
+    if (isEditing){
+      alert(`The table no:${table_no} is currently updating the orders`)
+      setOrdersUpdated(prevState=>!prevState)
+      setLoading(false)
+      return
+    }
+  }
 
 
   const handleRejectBtn = () => {
@@ -38,22 +48,30 @@ function OrderDetailItem({ _id, table_no, orderItems, totalPrice, setOrdersUpdat
                 <p className="w-4 font-bold">{item.quantity}</p>X
                 <p className="font-bold">{item.name}</p>
               </div>
-              <p className="font-bold text-green-600">${item.price}</p>
+              <p className="font-bold text-green-600">₹{item.price}</p>
             </div>
           ))}
         </div>
         <div className="flex w-11/12 items-center justify-end border border-gray-400 p-2">
           {/* <p className="font-bold ml-1" >Total Amount:</p> */}
-          <p className="text-3xl font-bold text-green-600">${totalPrice}</p>
+          <p className="text-3xl font-bold text-green-600">₹{totalPrice}</p>
         </div>
         <div className="mt-3 flex w-11/12 justify-between px-6 py-2">
-          <Button className="green-submit-button px-8">
+          <Button className="green-submit-button px-8" onClick={handleAcceptBtn} >
+          {loading?
+          <p className="font-bold" >...Please Wait</p>:
+          <>
             <TiTick size={25} />
             <p className="font-bold" >Accept</p>
+          </>}
           </Button>
           <Button onClick={handleRejectBtn} className="red-reject-button px-8">
+          {loading?
+          <p className="font-bold" >...Please Wait</p>:
+          <>
             <RxCross2 size={25} />
             <p className="font-bold" >Reject</p>
+          </>}
           </Button>
         </div>
       </div> 

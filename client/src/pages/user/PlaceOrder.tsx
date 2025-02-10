@@ -1,99 +1,118 @@
 import { FaArrowLeft, FaCartShopping } from "react-icons/fa6";
 import useCartContext from "../../context/CartContext";
-import { Button, Image, Input, Loading, Select, SelectPayment } from "../../components";
+import { Button, Image, Input, Loading, Modal, Select, SelectPayment } from "../../components";
 import CartItem from "../../components/user/Orders/CartItem";
-import { useState } from "react";
+import { useEffect, useId, useState } from "react";
 import { makeOrder } from "../../api/order";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import { initiatePayment } from "../../api/payment";
 import {generateUniqueId} from 'esewajs'
+import { getAllTables } from "../../api/table";
+import useTableContext from "../../context/TableContext";
+import useOrderContext from "../../context/OrderContext";
 
 
-const options = [
-  "A1",
-  "A2",
-  "A3",
-  "A4",
-  "B1",
-  "B2",
-  "B3",
-  "B4",
-  "C1",
-  "C2",
-  "C3",
-  "C4",
-  "D1",
-  "D2",
-  "D3",
-  "D4",
-];
+
 
 const paymentOptions = [
   {
     img:"https://republicaimg.nagariknewscdn.com/shared/web/uploads/media/esewa_20200118185351.jpg",
-    label: "Esewa"
+    label: "Esewa",
+    value:'ESEWA'
   },
   {
     img:"https://i.pinimg.com/736x/02/7e/b5/027eb52220026b111177c0f4882cb662.jpg",
-    label:"Cash on Hand"
+    label:"Cash on Hand",
+    value:"CASH"
   }
 ]
 
+
+
 function Orders() {
-  const { cartItems, getCartTotal } = useCartContext();
+  const { cartItems, getCartTotal, clearCart } = useCartContext();
+  const {setOrderId} = useOrderContext();
+  const {tableNo} = useTableContext()
   const [note, setNote] = useState("");
   const [orderType, setOrderType] = useState("Delivery");
-  const [table_no, setTableNo] = useState("A1");
   const [loading, setLoading] = useState(false);
-  const [paymentType, setPaymentType] = useState("");
+  const [paymentType, setPaymentType] = useState<"ESEWA"|"CASH"|"">("");
+  const [tables, setTables] = useState<string[]>([])
+  const [showMessage, setShowMessage] = useState(false)
+  const [message, setMessage] = useState("")
+  const modalId = useId();
   const navigate = useNavigate()
 
-  console.log(paymentType)
 
 
-  if (!cartItems.length)
-    return (
-      <div className="flex min-h-screen flex-col items-center justify-center">
-        <FaCartShopping className="text-[160px] lg:text-[280px]" />
-        <h1 className="roboto-bold ml-5 mt-6 text-3xl">No Orders Yet!</h1>
-      </div>
-    );
-
+  
+  
   function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    if (!paymentType) return
+
     const orderItems = cartItems.map((item) => ({
       _id: item._id,
       quantity: item.quantity,
       price: item.price,
     }));
     const data = {
-      table_no,
+      table_no:tableNo,
       orderType,
       note,
       orderItems,
     };
     const totalPrice = getCartTotal() 
-    const productId = generateUniqueId()
-
+    setLoading(true)
     makeOrder(data)
-      .then((res) => console.log(res.data))
-      .then(()=>{
-        if (paymentType === "Esewa"){
-          initiatePayment(totalPrice, productId)
-        .then(res=>{
-          if (res){
-            window.location.href = res.url
+    .then((res)=>{
+      setOrderId(res.data._id)
+      initiatePayment(totalPrice, res.data._id, paymentType)
+      .then(res=>{
+        clearCart()
+        if (paymentType==="CASH"){
+          navigate("/")
+          return
           }
-        })
-      }
+          if (res){
+              window.location.href = res.url
+            }
+          })
       })
       .catch((error) => {
         console.log(error);
+        setMessage("There was an error " + error)
       })
+      .finally(()=>{
+        setLoading(false)
+      })
+    }
+    
+    useEffect(()=>{
+      getAllTables()
+      .then((res)=>res.data.map(data=>data.table_no))
+      .then(data=>setTables(data))
+      .catch(error=>console.log(error))
       
-      
-  }
+    }, [])
 
+
+    if (!cartItems.length)
+      return (
+        <>
+          <div className="flex min-h-screen flex-col items-center justify-center">
+          <Link to="/" >
+        <div className="absolute top-0 left-2 mt-6 p-3 font-garamond w-24 flex items-center justify-center rounded-full bg-orange-500 text-white gap-1 hover:gap-2 font-medium ">
+          <FaArrowLeft />
+          <p>Back</p>
+        </div>
+      </Link>
+            <FaCartShopping className="text-[160px] lg:text-[280px]" />
+            <h1 className="roboto-bold ml-5 mt-6 text-3xl">No Orders Yet!</h1>
+          </div>
+        </>
+      );
+    
   return (
     <div className="flex flex-col">
       <Link to="/" >
@@ -117,17 +136,17 @@ function Orders() {
         ))}
       <div className="mr-4 flex justify-end">
         <p className="roboto-bold mt-7 text-2xl">
-          Total: <span className="text-green-600">${getCartTotal()}</span>{" "}
+          Total: <span className="text-green-600">₹{getCartTotal()}</span>{" "}
         </p>
       </div>
       <div className="divider">Select your payment methods</div>
-      <SelectPayment paymentOptions={paymentOptions} paymentType={paymentType} setPaymentType={setPaymentType} />
+        <form onSubmit={handleSubmit}>
+      <SelectPayment paymentOptions={paymentOptions} setPaymentType={setPaymentType} />
       <div className="p-5">
         <Select
           name="table_no"
-          value={table_no}
-          onChange={(e) => setTableNo(e.currentTarget.value)}
-          options={options}
+          value={tableNo}
+          options={tables}
           className="rounded-3xl indent-2"
         >
           Table No
@@ -147,7 +166,6 @@ function Orders() {
           onChange={(e) => setNote(e.currentTarget.value)}
         />
       </div>
-      <form onSubmit={handleSubmit}>
         <Button
           type="submit"
           className="green-submit-button bottom-5 mb-6 mt-6 w-full"
@@ -156,6 +174,7 @@ function Orders() {
         </Button>
       </form>
       {loading && <Loading />}
+      {showMessage && <Modal id={modalId} >{message}</Modal>}
     </div>
   );
 }

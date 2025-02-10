@@ -31,7 +31,7 @@ const HighlightQuery = ({query, word}:{query:string, word:string}) => {
 }
 
 function DishCard({ _id, name, image, price }: DishProps) {
-  const { addToCart, editCartItem, getDishQuantity } = useCartContext();
+  const { addToCart, editCartItem, getDishQuantity, removeFromCart } = useCartContext();
   const {searchedQuery} = useSearchContext()
   const [quantity, setQuantity] = useState<number>(getDishQuantity(_id) || 0);
   const [favorite, setFavorite] = useState(false);
@@ -51,7 +51,10 @@ function DishCard({ _id, name, image, price }: DishProps) {
 
   useEffect(() => {
     editCartItem({ _id, quantity });
-  }, [quantity]);
+    if (!quantity){
+      removeFromCart(_id)
+    }
+  }, [quantity, _id]);
 
   return (
     <div className="group mb-10 border-5">
@@ -69,7 +72,7 @@ function DishCard({ _id, name, image, price }: DishProps) {
           <HighlightQuery query={searchedQuery} word={name}  />
         </h1>
         <h2 className="text-center text-xl font-semibold text-green-600">
-          ${price}
+         ₹{price}
         </h2>
         {quantity ? (
           <div className="mt-3 flex w-full items-center justify-between p-4 text-white">

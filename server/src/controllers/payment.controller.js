@@ -1,75 +1,89 @@
-import { Transaction } from "../models/transaction.model.js"; //for saving the ordered data in database
 import dotenv from "dotenv"
 dotenv.config();
+import { Payment } from "../models/payment.model.js"; //for saving the ordered data in database
 import { EsewaPaymentGateway, EsewaCheckStatus } from "esewajs"; //we install our package hehe
+import { ApiError, ApiResponse, asyncHandler } from "../utils/index.js";
 
 
-const EsewaInitiatePayment = async (req, res) => {
-  const { amount, productId } = req.body; //data coming from frontend
-  
-  try {
-
-    const reqPayment = await EsewaPaymentGateway(
-      amount,
-      0,
-      0,
-      0,
-      productId,
-      process.env.MERCHANT_ID,
-      process.env.SECRET,
-      process.env.SUCCESS_URL,
-      process.env.FAILURE_URL,
-      process.env.ESEWAPAYMENT_URL,
-      undefined,
-      undefined
-    );
-    if (!reqPayment) {
-      return res.status(400).json("error sending data");
-    }
-    if (reqPayment.status === 200) {
-      const transaction = new Transaction({
-        product_id: productId,
-        amount: amount,
+const initiatePayment = asyncHandler(async (req, res, next) => {  
+    const { amount, orderId, paymentMethod } = req.body; //data coming from frontend
+    const reqFields = ["amount", "orderId", "paymentMethod"]
+    const payment = new Payment()
+    
+    
+      reqFields.forEach((field) => {
+        if (!req.body[field]) {
+          throw new ApiError(401, `The ${field} field is required.`);
+        }
       });
-      await transaction.save();
-      console.log("transaction passed   ");
-      return res.send({
-        url: reqPayment.request.res.responseUrl,
-      });
-    }
-  } catch (error) {
-    return res.status(400).json("error sending data");
-  }
-};
+    
+    
+      if (paymentMethod !== "CASH" && paymentMethod !== "ESEWA") {
+        throw new ApiError(400, "Please give valid Payment Method")
+      }
+    
+      if (paymentMethod === "CASH") {
+        payment.orderId = orderId;
+        payment.amount = amount;
+        payment.paymentMethod = paymentMethod;
+        
+        await payment.save()
+        
+        return res.status(200)
+          .json(
+            new ApiResponse(200, payment, "Payment initiated successfully")
+          );
+      }
+    
+      const reqPayment = await EsewaPaymentGateway(
+        amount,
+        0,
+        0,
+        0,
+        payment._id,
+        process.env.MERCHANT_ID,
+        process.env.SECRET,
+        process.env.SUCCESS_URL,
+        process.env.FAILURE_URL,
+        process.env.ESEWAPAYMENT_URL,
+        undefined,
+        undefined
+      );
+      if (!reqPayment) {
+        throw new ApiError(400, "Error initiating the payment through Esewa")
+      }
+      if (reqPayment.status === 200) {
+        payment.orderId = orderId;
+        payment.amount = amount;
+        payment.paymentMethod = paymentMethod;
+        await payment.save();
+        console.log("Transaction passed!!");
+        return res.send({
+          url: reqPayment.request.res.responseUrl,
+        });
+      }
 
-const paymentStatus = async (req, res) => {
-  const { product_id } = req.body; // Extract data from request body
-  try {
-    // Find the transaction by its signature
-    const transaction = await Transaction.findOne({ product_id });
-    if (!transaction) {
+})
+
+
+
+const paymentStatus = asyncHandler(async (req, res) => {
+  const { orderId } = req.body;
+    const payment = await Payment.findOne({ orderId });
+    if (!payment) {
       return res.status(400).json({ message: "Transaction not found" });
     }
 
-    const paymentStatusCheck = await EsewaCheckStatus(
-      transaction.amount,
-      transaction.product_id,
-      process.env.MERCHANT_ID,
-      process.env.ESEWAPAYMENT_STATUS_CHECK_URL
-    );
+    const paymentStatusCheck = await EsewaCheckStatus(payment.amount, payment.orderId, process.env.MERCHANT_ID, process.env.ESEWAPAYMENT_STATUS_CHECK_URL)
 
     if (paymentStatusCheck.status === 200) {
-      // Update the transaction status
-      transaction.status = paymentStatusCheck.data.status;
-      await transaction.save();
+      payment.status = paymentStatusCheck.data.status;
+      await payment.save();
       return res
         .status(200)
-        .json({ message: "Transaction status updated successfully" });
+        .json(new ApiResponse(200, {}, "Transaction status updated successfully" ));
     }
-  } catch (error) {
-    console.error("Error updating transaction status:", error);
-    return res.status(500).json({ message: "Server error", error: error.message });
-  }
-};
+})
 
-export { EsewaInitiatePayment, paymentStatus };
+
+export { initiatePayment, paymentStatus };

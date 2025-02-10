@@ -17,18 +17,23 @@ const orderItemSchema = new Schema({
 })
 
 const orderSchema = new Schema({
-    // tableId:{
-    //     type:Schema.Types.ObjectId,
-    //     ref:"Table",
-    //     required: true
-    // },
-    table_no:{
-        type:String,
+    tableId:{
+        type:Schema.Types.ObjectId,
+        ref:"Table",
         required: true
     },
     orderType: {
         type: String,
         enum: ["Delivery", "Take Away", "Dine-In"]
+    },
+    isEditing:{
+        type: Boolean,
+        default: false
+    },
+    status:{
+        type: String,
+        enum: ["PENDING", "PREPARING", "READY", "CANCELLED"],
+        default: "PENDING"
     },
     note:{
         type: String

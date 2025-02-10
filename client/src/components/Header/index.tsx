@@ -5,11 +5,11 @@ import { Link } from 'react-router-dom';
 
 function Header() {
   return (
-    <header className="p-4 flex justify-between items-center ">
+    <header className="lg:p-4 flex justify-between items-center ">
       <Link to="/">
         <Image imageUrl={logo} alt="web-logo" className='border rounded-full border-opacity-45 w-[100px] h-[100px] border-white'  />
       </Link>
-      <div className="w-9/12" >
+      <div className="w-8/12" >
         <SearchBar/>
       </div>
     </header>

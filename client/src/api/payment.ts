@@ -5,11 +5,12 @@ const paymentApi = axios.create({
 });
 
 
-const initiatePayment = async (amount:number, productId:string) => {
+const initiatePayment = async (amount:number, orderId:string, paymentMethod:"ESEWA" | "CASH") => {
     try {
         const response = await paymentApi.post(`/initiate-payment`, {
             amount,
-            productId
+            orderId,
+            paymentMethod
         });
         return response.data;
     } catch (error) {

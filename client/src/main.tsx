@@ -11,27 +11,32 @@ import {
 } from "react-router-dom";
 import { AlertProvider } from "./context/AlertContext.tsx";
 import {
-  NotFoundPage,
-  UserOrders,
   AdminLayout,
   Dashboard,
-  EditMenu,
   Orders,
   OrderDetails,
+  EditMenu,
+  NotFoundPage,
+  PlaceOrder,
+  EditOrder,
+  UserOrderList,
   DishDescription,
+  IndexPage,
   PaymentFailurePage,
   PaymentSuccessPage,
 } from "./pages";
 import { ModalProvider } from "./context/ModalContext.tsx";
 import { CartProvider } from "./context/CartContext.tsx";
+import { OrderProvider } from "./context/OrderContext.tsx";
 import { OrderList } from "./components/admin";
 import { SearchProvider } from "./context/SearchContext.tsx";
+import { TableProvider } from "./context/TableContext.tsx";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/">
       <Route path="admin/" element={<AdminLayout />}>
-        <Route path="dashboard" element={<Dashboard />} />
+        <Route path="qr-codes" element={<Dashboard />} />
         <Route path="edit-menu" element={<EditMenu />} />
         <Route path="orders/" element={<Orders />}>
           <Route path="" element={<OrderList />} />
@@ -43,8 +48,11 @@ const router = createBrowserRouter(
       </Route>
       <Route path="/payment-success" element={<PaymentSuccessPage />} />
       <Route path="/payment-failure" element={<PaymentFailurePage />} />
+      <Route path="/data?" element={<IndexPage />} />
       <Route path="d/:dishId" element={<DishDescription />} />
-      <Route path="orders" element={<UserOrders />} />
+      <Route path="place-order" element={<PlaceOrder />} />
+      <Route path="edit-order/o/:orderId" element={<EditOrder />} />
+      <Route path="my-order" element={<UserOrderList />} />
       <Route path="test" element={<Test />} />
       <Route path="*" element={<NotFoundPage />} />
     </Route>,
@@ -53,14 +61,18 @@ const router = createBrowserRouter(
 
 createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
-    <AlertProvider>
-      <SearchProvider>
-        <ModalProvider>
-          <CartProvider>
-            <RouterProvider router={router} />
-          </CartProvider>
-        </ModalProvider>
-      </SearchProvider>
-    </AlertProvider>
+    <CartProvider>
+      <AlertProvider>
+        <SearchProvider>
+          <OrderProvider>
+            <ModalProvider>
+              <TableProvider>
+                <RouterProvider router={router} />
+              </TableProvider>
+            </ModalProvider>
+          </OrderProvider>
+        </SearchProvider>
+      </AlertProvider>
+    </CartProvider>
   </React.StrictMode>,
 );

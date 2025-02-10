@@ -19,7 +19,7 @@ function OrderDetails() {
       setOrders(res.data)
     })
     .finally(()=>setLoading(false))
-  }, [ordersUpdated])
+  }, [ordersUpdated, selectedType])
 
   console.log(orders)
 

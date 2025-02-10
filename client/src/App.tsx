@@ -1,7 +1,5 @@
-import { Outlet } from "react-router-dom";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
-import Hero from "./components/Hero.tsx";
 import { Home } from "./pages";
 import { Button, Carousel, Divider, Drawer, Image, Loading } from "./components";
 import { Categories, DishCard } from "./components/user/index.ts";
@@ -36,7 +34,7 @@ function App() {
   
 
   return (
-    <Drawer>
+    <div className="overflow-auto scrollbar-hide">
       {/* Just commented out for now, it's socket related stuff */}
       {/* <div>
           <input className="input border" value={message} onChange={handleChange} />
@@ -44,9 +42,9 @@ function App() {
         </div> */}
       <Header />
       <Home />
+      <Footer />
       {/* <Hero /> */}
-      {/* <Footer /> */}
-    </Drawer>
+    </div>
   );
 }
 

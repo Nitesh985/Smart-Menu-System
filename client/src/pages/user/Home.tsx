@@ -6,9 +6,9 @@ function Home() {
   return (
     <>
       <HomeComponent />
-      <Link to="./orders"  >
+      {/* <Link to="./orders"  >
         <CartButton />
-      </Link>
+      </Link> */}
     </>
   )
 }

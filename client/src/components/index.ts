@@ -10,10 +10,13 @@ import Loader from './Loader'
 import LoaderUpstairs from './LoaderUpstairs';
 import Loading from './Loading';
 import Image from './Image';
-import Carousel from './Carousel';
+import QRCode from './QRCode';
+import MenuCard from './MenuCard';
+import ConfirmBox from './ConfirmBox'
 
 // Category
 import CreateCategory from './admin/EditMenu/CreateCategory';
+import OrderForm from './user/OrderForm';
 
 // Tag Utils
 import Button from './Button'
@@ -34,6 +37,7 @@ import SelectPayment from './SelectPayment';
 
 export {
     HomeComponent,
+    OrderForm,
 
     Alert,
     Card,
@@ -47,10 +51,13 @@ export {
     LoaderUpstairs,
     Loading,
     Image,
-    Carousel,
     Divider,
     Drawer,
     CartButton,
+    QRCode,
+    MenuCard,
+    ConfirmBox,
+
 
     // Tag Utils
     Button,

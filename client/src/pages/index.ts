@@ -1,6 +1,6 @@
 // admin
 import AdminLayout from "./admin/AdminLayout";
-import MenuPage from './user/MenuPage'
+import MenuPage from './user/UserOrder'
 import Dashboard from "./admin/Dashboard";
 import NotFoundPage from "./not-found";
 import  Orders from "./admin/Orders";
@@ -9,8 +9,11 @@ import OrderDetails from "../components/admin/Orders/OrderDetails";
 
 // user
 import Home from './user/Home'
-import UserOrders from './user/Orders'
+import PlaceOrder from './user/PlaceOrder'
+import EditOrder from "./user/EditOrder";
+import UserOrderList from './user/UserOrder'
 import DishDescription from './user/DishDescription'
+import IndexPage from "./user/IndexPage";
 
 // payment
 import PaymentSuccessPage from "./payment/Success";
@@ -28,8 +31,11 @@ export {
 
     // user
     Home,
-    UserOrders,
+    PlaceOrder,
+    UserOrderList,
     DishDescription,
+    IndexPage,
+    EditOrder,
 
     // payment
     PaymentFailurePage,

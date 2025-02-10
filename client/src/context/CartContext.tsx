@@ -2,6 +2,7 @@ import { createContext, useContext, useEffect, useState } from "react";
 
 const CartContext = createContext<null | {
   cartItems: CartProps[];
+  setCartItems: React.Dispatch<React.SetStateAction<CartProps[]>>
   getCartTotal: () => number;
   getNoOfItems: () => number;
   getDishQuantity: (itemId:string)=> number;
@@ -23,7 +24,9 @@ interface CartProps {
 }
 
 export const CartProvider = ({ children }: { children: React.ReactNode }) => {
-  const [cartItems, setCartItems] = useState<CartProps[]>([]);
+  const [cartItems, setCartItems] = useState<CartProps[]>(()=>{
+    return JSON.parse(localStorage.getItem('CART') || '[]');
+  });
   const getCartTotal = () => {
     const total =  (cartItems?.reduce((total, cart) => total + (cart.price*cart.quantity), 0));
     return total.toFixed(2);
@@ -74,12 +77,12 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
     setCartItems(localValue ? JSON.parse(localValue) : []);
   }, []);
 
-  console.log(cartItems)
 
   return (
     <CartContext.Provider
       value={{
         cartItems,
+        setCartItems,
         getCartTotal,
         getNoOfItems,
         getDishQuantity,
