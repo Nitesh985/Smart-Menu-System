@@ -24,13 +24,13 @@ function EditOrder() {
       getOrder(orderId)
       .then(res=>{
         setOrder(res.data[0])
-        if (!getNoOfItems){
+        if (!getNoOfItems()){
           setCartItems(res.data[0]?.orderItems)
         }
         })
         .finally(()=>setLoading(false))
       }
-  }, [orderId, getNoOfItems, setCartItems])
+  }, [orderId, setCartItems])
 
   if (loading) return <Loading />
 

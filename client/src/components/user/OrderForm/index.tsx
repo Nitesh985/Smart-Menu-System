@@ -8,6 +8,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 
 import useTableContext from "../../../context/TableContext";
 import useOrderContext from "../../../context/OrderContext";
+import { RxCrossCircled } from "react-icons/rx";
 
 
 const removeNonUpdatedData = (newData:object, prevData:object) => {
@@ -71,12 +72,32 @@ function OrderForm({...order}) {
     }
 
 
-    if (!cartItems.length)
-      return (
-        <>
-        <div className="flex min-h-screen flex-col items-center justify-center" >
-        {orderEditingMode?<div className="absolute top-0 left-2 mt-6 p-3 font-garamond w-24 flex items-center justify-center rounded-full bg-orange-500 text-white gap-1 hover:gap-2 font-medium "  onClick={handleCancellation}>
-          <FaArrowLeft />
+    // if (!cartItems.length)
+    //   return (
+    //     <>
+    //     <div className="flex min-h-screen flex-col items-center justify-center" >
+    //     {order?.isEditing?<div className="absolute top-0 left-2 mt-6 p-3 font-garamond w-24 flex items-center justify-center rounded-full bg-orange-500 text-white gap-1 hover:gap-2 font-medium "  onClick={handleCancellation}>
+    //       <FaArrowLeft />
+    //       <p>Cancel</p>
+    //     </div>
+    //     :
+    //     <Link to="/" >
+    //     <div className="absolute top-0 left-2 mt-6 p-3 font-garamond w-24 flex items-center justify-center rounded-full bg-orange-500 text-white gap-1 hover:gap-2 font-medium ">
+    //       <FaArrowLeft />
+    //       <p>Back</p>
+    //     </div>
+    //   </Link>
+    //     }
+    //         <FaCartShopping className="text-[160px] lg:text-[280px]" />
+    //         <h1 className="roboto-bold ml-5 mt-6 text-3xl">No Orders Yet!</h1>
+    //       </div>
+    //     </>
+    //   );
+    
+  return (
+    <div className="flex flex-col">
+      {order?.isEditing?<div className="absolute top-0 left-2 mt-6 p-3 font-garamond w-28 flex items-center justify-center rounded-full bg-slate-500 text-white gap-1 hover:gap-2 font-medium cursor-pointer "  onClick={handleCancellation}>
+          <RxCrossCircled className="text-lg" />
           <p>Cancel</p>
         </div>
         :
@@ -87,20 +108,6 @@ function OrderForm({...order}) {
         </div>
       </Link>
         }
-            <FaCartShopping className="text-[160px] lg:text-[280px]" />
-            <h1 className="roboto-bold ml-5 mt-6 text-3xl">No Orders Yet!</h1>
-          </div>
-        </>
-      );
-    
-  return (
-    <div className="flex flex-col">
-      <Link to="/" >
-        <div className="mt-6 p-3 font-garamond w-24 flex items-center justify-center rounded-full bg-orange-500 text-white gap-1 hover:gap-2 font-medium ">
-          <FaArrowLeft />
-          <p>Back</p>
-        </div>
-      </Link>
       <div className="mb-3 mt-4 flex w-full items-center justify-center text-4xl">
         <FaCartShopping className="text-4xl" />
         <h1 className="montserrat-title ml-3 text-center">Cart</h1>

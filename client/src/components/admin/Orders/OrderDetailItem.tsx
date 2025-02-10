@@ -21,6 +21,8 @@ function OrderDetailItem({ _id, table_no, orderItems, totalPrice, setOrdersUpdat
       setLoading(false)
       return
     }
+    alert("The order is accepted")
+    setLoading(false)
   }
 
 

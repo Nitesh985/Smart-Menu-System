@@ -12,6 +12,8 @@ export interface OrderItemProps {
   note: string;
   orderItems: Dish[];
   totalPrice: number;
+  isEditing: boolean;
+  status: "PENDING" | "PREPARING" | "READY" | "CANCELLED"
 }
 
 function OrderItem({ _id, table_no, totalPrice, orderType, note, orderItems }: OrderItemProps) {
