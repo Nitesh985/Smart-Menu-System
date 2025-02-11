@@ -13,6 +13,7 @@ function AddDish({modalId}:{modalId:string}) {
     price: null,
     category: null,
     image: null,
+    quantity: null,
   });
   const [loading, setLoading] = useState(false)
 
@@ -39,6 +40,7 @@ function AddDish({modalId}:{modalId:string}) {
           price: 0,
           category: null,
           image: null,
+          quantity: null
         })
       });
   };
