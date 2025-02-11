@@ -12,6 +12,9 @@ const dishSchema = new Schema({
             public_id:String
         }
     },
+    quantity:{
+        type: Number
+    },
     description: {
         type: String
     },

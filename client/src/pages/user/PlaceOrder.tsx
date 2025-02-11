@@ -14,18 +14,6 @@ import useOrderContext from "../../context/OrderContext";
 
 
 
-const paymentOptions = [
-  {
-    img:"https://republicaimg.nagariknewscdn.com/shared/web/uploads/media/esewa_20200118185351.jpg",
-    label: "Esewa",
-    value:'ESEWA'
-  },
-  {
-    img:"https://i.pinimg.com/736x/02/7e/b5/027eb52220026b111177c0f4882cb662.jpg",
-    label:"Cash on Hand",
-    value:"CASH"
-  }
-]
 
 
 
@@ -36,11 +24,6 @@ function Orders() {
   const [note, setNote] = useState("");
   const [orderType, setOrderType] = useState("Delivery");
   const [loading, setLoading] = useState(false);
-  const [paymentType, setPaymentType] = useState<"ESEWA"|"CASH"|"">("");
-  const [tables, setTables] = useState<string[]>([])
-  const [showMessage, setShowMessage] = useState(false)
-  const [message, setMessage] = useState("")
-  const modalId = useId();
   const navigate = useNavigate()
 
 
@@ -49,7 +32,6 @@ function Orders() {
   
   function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (!paymentType) return
 
     const orderItems = cartItems.map((item) => ({
       _id: item._id,
@@ -62,39 +44,24 @@ function Orders() {
       note,
       orderItems,
     };
-    const totalPrice = getCartTotal() 
     setLoading(true)
     makeOrder(data)
     .then((res)=>{
       setOrderId(res.data._id)
-      initiatePayment(totalPrice, res.data._id, paymentType)
-      .then(res=>{
-        clearCart()
-        if (paymentType==="CASH"){
+        if (res.statusCode===201 && res.success){
+          alert("The order was successfully placed!")
+          clearCart()
           navigate("/")
-          return
-          }
-          if (res){
-              window.location.href = res.url
-            }
-          })
+        }
       })
       .catch((error) => {
         console.log(error);
-        setMessage("There was an error " + error)
       })
       .finally(()=>{
         setLoading(false)
       })
     }
     
-    useEffect(()=>{
-      getAllTables()
-      .then((res)=>res.data.map(data=>data.table_no))
-      .then(data=>setTables(data))
-      .catch(error=>console.log(error))
-      
-    }, [])
 
 
     if (!cartItems.length)
@@ -141,16 +108,8 @@ function Orders() {
       </div>
       <div className="divider">Select your payment methods</div>
         <form onSubmit={handleSubmit}>
-      <SelectPayment paymentOptions={paymentOptions} setPaymentType={setPaymentType} />
-      <div className="p-5">
-        <Select
-          name="table_no"
-          value={tableNo}
-          options={tables}
-          className="rounded-3xl indent-2"
-        >
-          Table No
-        </Select>
+        <div className="p-5">
+        <h2 className="px-5 py-3" ><span className="font-bold" >Table no:</span> {tableNo?<span>{tableNo}</span>:<span>No table no was found!</span>}</h2>
         <Select
           name="orderType"
           value={orderType}
@@ -174,7 +133,6 @@ function Orders() {
         </Button>
       </form>
       {loading && <Loading />}
-      {showMessage && <Modal id={modalId} >{message}</Modal>}
     </div>
   );
 }

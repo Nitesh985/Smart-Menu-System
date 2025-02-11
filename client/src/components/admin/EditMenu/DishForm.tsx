@@ -8,6 +8,7 @@ export type FormDataType = {
   category: string | null;
   description: string;
   image?: File | null;
+  quantity: number | null;
 };
 
 interface DishFormProps {
@@ -62,6 +63,7 @@ function DishForm({ handleSubmit, formData, setFormData}:DishFormProps) {
           placeholder="Enter Food Name"
           inputStyles="w-full input-info"
           name="name"
+          required={true}
           value={formData.name}
           onChange={handleChange}
         />
@@ -70,12 +72,21 @@ function DishForm({ handleSubmit, formData, setFormData}:DishFormProps) {
           placeholder="Enter Food Price"
           inputStyles="w-full input-info"
           name="price"
+          required={true}
           value={formData.price}
+          onChange={handleChange}
+        />
+        <Input
+          type="text"
+          placeholder="Enter Food Quantity"
+          inputStyles="w-full input-info"
+          name="quantity"
+          value={formData.quantity}
           onChange={handleChange}
         />
         <TextArea
           placeholder="Enter Food Description "
-          className=" textarea-info w-full mt-4"
+          className=" textarea-info w-full"
           name="description"
           value={formData.description}
           onChange={handleChange}
@@ -83,6 +94,7 @@ function DishForm({ handleSubmit, formData, setFormData}:DishFormProps) {
         <Select
           options={categories}
           name="category"
+          required={true}
           value={formData.category}
           onChange={handleChange}
         >
