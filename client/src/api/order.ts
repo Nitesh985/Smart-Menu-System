@@ -11,11 +11,16 @@ export interface OrderType {
   note: string;
   orderItems: Dish[];
   total: number;
+  token?: string;
 }
 
 const makeOrder = async (orderData: OrderType) => {
   try {
-    const response = await orderApi.post(`make-order`, orderData);
+    const response = await orderApi.post(`make-order`, orderData, {
+      headers:{
+        Authorization: "Bearer " + orderData.token
+      }
+    });
     return response.data;
   } catch (error) {
     console.log(error);

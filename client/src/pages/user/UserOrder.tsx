@@ -93,10 +93,10 @@ function UserOrder() {
   </div>
 
   return (
-    <div className="p-8">
+    <div className="p-4 sm:p-8">
       <h1 className="roboto-bold text-5xl text-center" >My Order</h1>
       <Button onClick={fetchOrders}><TbRefresh /></Button>    
-      <div className="border py-10 px-14 mt-7 rounded-badge border-dotted border-slate-600 bg-opacity-60 text-black">
+      <div className="border py-5 sm:py-10 px-7 sm:px-14 mt-7 rounded-badge border-dotted border-slate-600 bg-opacity-60 text-black">
         <h3 >Status: {order?.status}</h3>
         {order?.note && <h3>Note: {order.note}</h3>}
         <h3>Total Price: <span className="text-green-600" >₹{order?.totalPrice}</span></h3>

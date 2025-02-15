@@ -41,6 +41,7 @@ function Orders() {
       table_no:tableNo,
       note,
       orderItems,
+      token
     };
     setLoading(true)
     makeOrder(data)
