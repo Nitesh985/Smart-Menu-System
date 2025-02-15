@@ -121,22 +121,16 @@ function OrderForm({...order}) {
             <CartItem {...item} />
           </div>
         ))}
+        <Link to="/" className="self-center"  ><Button className="w-[250px] mt-7 self-center text-white bg-orange-500 border-orange-500 hover:border-orange-400 hover:bg-orange-400" >...Add More Dishes</Button></Link>
       <div className="mr-4 flex flex-col justify-end items-end">
         <p className="roboto-bold mt-7 text-2xl">
-          Total: <span className="text-green-600">₹{getCartTotal()}</span>{" "}
+          Total: <span className="text-green-600">Rs.{getCartTotal()}</span>{" "}
         </p>
       </div>
       <div className="divider"></div>
       <form onSubmit={handleSubmit}>
       <div className="p-5">
         <h2 className="px-5 py-3" ><span className="font-bold" >Table no:</span> {tableNo?<span>{tableNo}</span>:<span className="loading loading-bars loading-md"></span>}</h2>
-        <Select
-          name="orderType"
-          value={orderType}
-          onChange={(e) => setOrderType(e.currentTarget.value)}
-          options={["Delivery", "Take Away", "Dine-In"]}
-          className="mt-5 rounded-3xl indent-2"
-        />
         <Input
           name="note"
           placeholder="Note"

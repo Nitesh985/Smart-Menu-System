@@ -31,6 +31,8 @@ import { OrderProvider } from "./context/OrderContext.tsx";
 import { OrderList } from "./components/admin";
 import { SearchProvider } from "./context/SearchContext.tsx";
 import { TableProvider } from "./context/TableContext.tsx";
+import store from "./store/store.ts";
+import { Provider } from "react-redux";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -40,8 +42,8 @@ const router = createBrowserRouter(
         <Route path="edit-menu" element={<EditMenu />} />
         <Route path="orders/" element={<Orders />}>
           <Route path="" element={<OrderList />} />
-          <Route path="order-details" element={<OrderDetails />} />
         </Route>
+          <Route path="kitchen" element={<OrderDetails />} />
       </Route>
       <Route path="" element={<App />}>
         <Route path="/:categoryId" />
@@ -61,18 +63,20 @@ const router = createBrowserRouter(
 
 createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
-    <CartProvider>
-      <AlertProvider>
-        <SearchProvider>
-          <OrderProvider>
-            <ModalProvider>
-              <TableProvider>
-                <RouterProvider router={router} />
-              </TableProvider>
-            </ModalProvider>
-          </OrderProvider>
-        </SearchProvider>
-      </AlertProvider>
-    </CartProvider>
+    <Provider store={store} >
+      <CartProvider>
+        <AlertProvider>
+          <SearchProvider>
+            <OrderProvider>
+              <ModalProvider>
+                <TableProvider>
+                  <RouterProvider router={router} />
+                </TableProvider>
+              </ModalProvider>
+            </OrderProvider>
+          </SearchProvider>
+        </AlertProvider>
+      </CartProvider>
+    </Provider>
   </React.StrictMode>,
 );

@@ -26,9 +26,9 @@ const makeOrder = async (orderData: OrderType) => {
   }
 };
 
-const getOrders = async () => {
+const getOrders = async (query:string) => {
   try {
-    const response = await orderApi.get("/");
+    const response = await orderApi.get(`/?${query}`);
     return response.data;
   } catch (error) {
     if (error instanceof axios.AxiosError) {

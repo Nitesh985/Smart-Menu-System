@@ -31,7 +31,7 @@ export default function Footer() {
 
   return (
     <footer>
-          <div className={`scale-95 hover:scale-100 transition-transform duration-500 ease-in-out bg-[#3D3D3D] w-full fixed bottom-1 py-4 rounded-t-full text-white flex justify-center text-xl gap-2`} onClick={handleClick} >
+          <div className={`scale-95 hover:scale-100 transition-transform duration-500 ease-in-out bg-[#3D3D3D] w-full fixed bottom-1 py-4 rounded-t-full text-white flex justify-center text-xl gap-2 cursor-pointer`} onClick={handleClick} >
               <div className="flex gap-3">
                 {!total?<IoFastFood size={27} />:<HiShoppingCart size={27} />}
                 <span className="font-bold">{!total?"My Orders":"Go To Cart"}</span>

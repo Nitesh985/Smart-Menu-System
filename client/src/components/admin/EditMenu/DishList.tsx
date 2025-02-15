@@ -17,6 +17,7 @@ function DishList() {
       .finally(() => setLoading(false));
   }, [dishUpdated]);
 
+
   return (
     <>
       <Table rows={["name", "description"]}>
@@ -34,15 +35,15 @@ function DishList() {
                   <p className="font-semibold text-[14px]">{index + 1}</p>
                 </td>
                 <td>
-                  {dish.image && (
-                    <Image imageUrl={dish.image?.url} />
+                  {dish?.image && (
+                    <Image imageUrl={dish?.image?.url} />
                   )}
                   <div className="text-center">{dish.name}</div>
                 </td>
                 <td>{dish.description}</td>
-                <div className="ml-5 flex items-center self-end scale-0 space-x-3 group-hover:scale-100">
-                  <RemoveDishBtn dishId={dish._id} setDishUpdated={setDishUpdated} />
+                <div className="ml-5 flex scale-0 space-x-3 group-hover:scale-100">
                   <EditDishBtn dishId={dish._id}  setDishUpdated={setDishUpdated} />  
+                  <RemoveDishBtn dishId={dish._id} setDishUpdated={setDishUpdated} />
                 </div>
               </tr>
           ))}

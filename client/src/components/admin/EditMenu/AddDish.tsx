@@ -6,7 +6,7 @@ import { FormDataType } from "./DishForm";
 
 
 
-function AddDish({modalId}:{modalId:string}) {
+function AddDish({setShowModal}:{setShowModal:React.Dispatch<React.SetStateAction<boolean>>}) {
   const [formData, setFormData] = useState<FormDataType>({
     name: "",
     description: "", 
@@ -22,11 +22,17 @@ function AddDish({modalId}:{modalId:string}) {
     e.preventDefault();
     setLoading(true);
     addDish(formData)
-      .then((response) => {
-        console.log(response);
-        const element = document.getElementById(modalId) as HTMLFormElement;
-        if (element) {
-          element.close();
+      .then((res) => {
+        if (res.success){
+          setShowModal(false);
+          setFormData({
+            name: "",
+            description: "", 
+            price: null,
+            category: null,
+            image: null,
+            quantity: null,
+          })
         }
       })
       .catch((error) => {
@@ -34,22 +40,12 @@ function AddDish({modalId}:{modalId:string}) {
       })
       .finally(() => {
         setLoading(false);
-        setFormData({
-          name: "",
-          description: "", 
-          price: 0,
-          category: null,
-          image: null,
-          quantity: null
-        })
+     
       });
   };
 
   return (
     <>
-      <div className="text-center font-extrabold text-3xl text-txtColor-200 opacity-90">
-        Add Dish
-      </div>
       <DishForm handleSubmit={handleSubmit} setFormData={setFormData} formData={formData} />
       {loading && <Loading />}
     </>

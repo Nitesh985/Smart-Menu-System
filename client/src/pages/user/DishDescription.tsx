@@ -4,6 +4,7 @@ import styled from "styled-components";
 import { getDishById } from "../../api/dish";
 import { Loading } from "../../components";
 import useCartContext from "../../context/CartContext";
+import Footer from "../../components/Footer";
 
 type DishType = {
   _id: string;
@@ -39,7 +40,9 @@ function DishDescriptionPage() {
     };
     
     useEffect(() => {
-      editCartItem({ _id:dish?._id, quantity });
+      if (dish){
+        editCartItem({ _id:dish?._id, quantity });
+      }
     }, [quantity]);
     
     
@@ -68,7 +71,7 @@ function DishDescriptionPage() {
               <Emoji>🍜</Emoji>
               {dish.name}
             </DishTitle>
-            <DishPrice>${dish.price}</DishPrice>
+            <DishPrice>Rs{dish.price}</DishPrice>
           </DishDetails>
           <DishDescription className="h-screen" >{dish.description}</DishDescription>
           <ActionBar>
@@ -87,6 +90,7 @@ function DishDescriptionPage() {
           </ActionBar>
         </DishContainer>
       </CardWrapper>
+      <Footer />
     </div>
   );
 }

@@ -16,7 +16,6 @@ import ConfirmBox from './ConfirmBox'
 
 // Category
 import CreateCategory from './admin/EditMenu/CreateCategory';
-import OrderForm from './user/OrderForm';
 
 // Tag Utils
 import Button from './Button'
@@ -35,9 +34,16 @@ import CartButton from './CartButton'
 import SelectPayment from './SelectPayment';
 
 
+// Form
+import SignUpForm from './user/sign-up-form';
+import OrderForm from './user/OrderForm';
+
+
 export {
     HomeComponent,
+    // Form
     OrderForm,
+    SignUpForm,
 
     Alert,
     Card,

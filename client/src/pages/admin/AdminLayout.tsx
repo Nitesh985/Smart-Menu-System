@@ -6,12 +6,15 @@ import { RiEditCircleFill } from "react-icons/ri";
 import { HiOutlineLogout } from "react-icons/hi";
 import { MdSpaceDashboard } from "react-icons/md";
 import { useEffect } from "react";
+import { TbToolsKitchen3 } from "react-icons/tb";
+import { FaKitchenSet } from "react-icons/fa6";
 
 
 const itemsList: SideBarItemsProps[] = [
-  { name: "QR Codes", item: <MdQrCodeScanner  className="sidebar-icon"  />, params:"./qr-codes" },
+  {name: "Kitchen", item: <FaKitchenSet   className="sidebar-icon" />, params:"./kitchen" },
   { name: "Orders", item: <MdOutlineFoodBank className="sidebar-icon"  />, params:"./orders" },
   { name: "Edit Menu", item: <RiEditCircleFill className="sidebar-icon" />, params:"./edit-menu" },
+  { name: "QR Codes", item: <MdQrCodeScanner  className="sidebar-icon"  />, params:"./qr-codes" },
   { name: "LogOut", item: <HiOutlineLogout className="sidebar-icon" />, params:"./logout" },
 ];
 

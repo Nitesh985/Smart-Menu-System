@@ -15,17 +15,13 @@ function EditMenu() {
 
   const [selectedOption, setSelectedOption] = useState('category')
 
-  const dishId = useId();
-  const categoryId = useId();
 
   const handleDishClick = () => {
     setShowDishForm(true);
-    (document.getElementById(dishId) as HTMLFormElement).showModal();
   };
 
   const handleCategoryClick = () => {
     setShowCategoryForm(true);
-    (document.getElementById(categoryId) as HTMLFormElement).showModal();
   };
 
 
@@ -58,16 +54,12 @@ function EditMenu() {
       {selectedOption==="category" && <CategoryList />}
       {selectedOption==="dish" && <DishList />}
 
-      {showDishForm && (
-        <Modal id={dishId}>
-          <AddDish modalId={dishId} />
+        <Modal title="Add Dish" isOpen={showDishForm} onClose={()=>setShowDishForm(false)}>
+          <AddDish setShowModal={setShowDishForm} />
         </Modal>
-      )}
-      {showCategoryForm && (
-        <Modal id={categoryId}>
-          <CreateCategory modalId={categoryId} />
+        <Modal title="Add Category" isOpen={showCategoryForm} onClose={()=>setShowCategoryForm(false)} >
+          <CreateCategory setShowModal={setShowCategoryForm} />
         </Modal>
-      )}
     </>
   );
 }

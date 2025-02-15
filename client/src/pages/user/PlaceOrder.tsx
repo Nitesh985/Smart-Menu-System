@@ -10,9 +10,10 @@ import {generateUniqueId} from 'esewajs'
 import { getAllTables } from "../../api/table";
 import useTableContext from "../../context/TableContext";
 import useOrderContext from "../../context/OrderContext";
-
-
-
+import { showModal } from "../../components/utils/Modal";
+import Dialog from '../../components/Dialog'
+import {SignUpForm} from "../../components";
+import { useAppSelector } from "../../store/hooks";
 
 
 
@@ -25,14 +26,13 @@ function Orders() {
   const [orderType, setOrderType] = useState("Delivery");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate()
+  const [isOpen, setIsOpen] = useState(false)
+  const authStatus = useAppSelector(state=>state.auth.status)
+  const token = useAppSelector(state=>state.auth.token)
+    
 
 
-
-  
-  
-  function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-
+  const placeOrder = () => {
     const orderItems = cartItems.map((item) => ({
       _id: item._id,
       quantity: item.quantity,
@@ -60,6 +60,18 @@ function Orders() {
       .finally(()=>{
         setLoading(false)
       })
+  }
+  
+  
+  function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (!authStatus){
+      setIsOpen(true)
+      return
+    }
+    console.log(token)
+    placeOrder()
+
     }
     
 
@@ -106,7 +118,7 @@ function Orders() {
           Total: <span className="text-green-600">₹{getCartTotal()}</span>{" "}
         </p>
       </div>
-      <div className="divider">Select your payment methods</div>
+      <div className="divider"></div>
         <form onSubmit={handleSubmit}>
         <div className="p-5">
         <h2 className="px-5 py-3" ><span className="font-bold" >Table no:</span> {tableNo?<span>{tableNo}</span>:<span>No table no was found!</span>}</h2>
@@ -121,7 +133,7 @@ function Orders() {
           name="note"
           placeholder="Note"
           value={note}
-          inputStyles="w-full mt-5 rounded-3xl indent-2"
+          inputStyles="w-full mt-5 rounded-3xl indent-2 textarea"
           onChange={(e) => setNote(e.currentTarget.value)}
         />
       </div>
@@ -132,6 +144,9 @@ function Orders() {
           Check Out
         </Button>
       </form>
+        <Modal title="Sign Up" isOpen={isOpen} onClose={()=>setIsOpen(false)}>
+          <SignUpForm onClose={()=>setIsOpen(false)} />
+        </Modal>
       {loading && <Loading />}
     </div>
   );

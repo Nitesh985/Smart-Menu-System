@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { initiatePayment, paymentStatus } from "../controllers/payment.controller.js";
-import { verifyJWT } from "../middlewares/auth.middlewares.js";
+import { verifyTable, verifyAuth } from "../middlewares/auth.middlewares.js";
 const router = Router();
 
 router.route('/initiate-payment').post( initiatePayment)

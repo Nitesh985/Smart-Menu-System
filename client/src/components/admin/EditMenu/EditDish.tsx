@@ -31,7 +31,7 @@ function EditDish({ dishId, setDishUpdated }: EditDishProps) {
         .finally(()=>{
             setLoading(false)
         })
-    }, [])
+    }, [dishId])
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault();
@@ -56,9 +56,6 @@ function EditDish({ dishId, setDishUpdated }: EditDishProps) {
 
     return (
     <>
-      <div className="text-center font-extrabold text-3xl text-txtColor-200 opacity-90">
-        Edit Dish
-      </div>
       <DishForm handleSubmit={handleSubmit} setFormData={setFormData} formData={formData} />
       {loading && <Loading />}
     </>

@@ -88,7 +88,7 @@ const addDishItem = asyncHandler(async (req, res) => {
     }
 
     return res.json(
-        new ApiResponse(201, foodItem, "The food item added successfully")
+        new ApiResponse(201, foodAdded, "The food item added successfully")
     );
 });
 

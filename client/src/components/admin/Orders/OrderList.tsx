@@ -1,40 +1,41 @@
 import { useEffect, useState } from "react";
-import { Card, Loader, SelectOptions } from "../..";
+import { Button, Card, Loader, SelectOptions } from "../..";
 import OrderItem from "./OrderItem";
 import { getOrders } from "../../../api/order";
 import { OrderItemProps } from "./OrderItem";
 import { Link } from "react-router-dom";
+import { TbRefresh } from "react-icons/tb";
 
 const options = ["All", "Dine-In", "Take-Away", "Delivery"]
 
 function OrderList() {
   const [userOrders, setUserOrders] = useState<OrderItemProps[]>([]);
   const [loading, setLoading] = useState(true);
+  const [ordersUpdated, setOrdersUpdated] = useState(false)
 
-  useEffect(() => {
+  const fetchOrders = () => {
     setLoading(true);
-    getOrders()
+    getOrders("status=PENDING")
       .then((res) => {
         setUserOrders(res.data);
       })
       .finally(() => setLoading(false));
-  }, []);
+  }
+
+  useEffect(() => {
+    fetchOrders()
+  }, [ordersUpdated]);
 
   return (
     <>
       <div className="mt-3 flex justify-center">
-        <SelectOptions
-          className="flex bg-black"
-          optionStyles="bg-black text-white"
-          options={options}
-        />
+        <h1 className="font-bold text-2xl" >Orders List</h1>
       </div>
+      <Button onClick={fetchOrders}><TbRefresh /></Button>
       <div className="bg-primary-100 flex w-full cursor-pointer flex-wrap items-center justify-between p-7">
         {userOrders.length > 0 &&
           userOrders.map((order) => (
-            <Link to={"./order-details"}>
-              <OrderItem key={order._id} {...order} />
-            </Link>
+              <OrderItem key={order._id} {...order} setOrdersUpdated={setOrdersUpdated} />
           ))}
         {loading && (
           <div className="mt-9 flex h-[300px] w-[300px] animate-pulse items-center justify-center rounded-3xl border bg-orange-500">

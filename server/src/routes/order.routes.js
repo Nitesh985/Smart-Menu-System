@@ -1,10 +1,10 @@
 import { Router } from "express";
 import { makeOrder, getAllOrders, getOrders, deleteOrder, getOrder, updateOrder } from '../controllers/order.controllers.js'
-import { verifyJWT, verifyAdmin } from "../middlewares/auth.middlewares.js";
+import { verifyTable, verifyAdmin, verifyAuth } from "../middlewares/auth.middlewares.js";
 
 const router = Router();
 
-router.route("/make-order").post(makeOrder);
+router.route("/make-order").post(verifyAuth, makeOrder);
 router.route("/").get(verifyAdmin, getAllOrders)
 router.route("/get-orders/:orderType").get(verifyAdmin, getOrders)
 router.route("/get-order/:orderId").get(getOrder)

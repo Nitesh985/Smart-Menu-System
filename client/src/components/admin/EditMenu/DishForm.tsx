@@ -34,16 +34,16 @@ function DishForm({ handleSubmit, formData, setFormData}:DishFormProps) {
   };
 
   useEffect(() => {
-    if (formData.image && !formData.image?.url) {
+    if (formData?.image && !formData.image?.url) {
       const imageUrl = URL.createObjectURL(formData.image);
       setImageUrl(imageUrl);
     }
-  }, [formData.image]);
+  }, [formData?.image]);
 
   useEffect(() => {
     getAllCategories()
       .then((data) => {
-        const trimmedData = data.map((category:any) => category.name);
+        const trimmedData = data.map((category:any) => category?.name);
         setCategories(trimmedData);
       })
       .catch((error) => {

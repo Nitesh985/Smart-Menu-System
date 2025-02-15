@@ -1,4 +1,5 @@
-import { InputHTMLAttributes, useId } from "react"
+import { useId, forwardRef } from "react"
+
 
 interface InputProps{
     type?: React.HTMLInputTypeAttribute | undefined;
@@ -12,15 +13,20 @@ interface InputProps{
 }
 
 
-function Input({label, type="text", labelStyles, placeholder, inputStyles, name, value, onChange, ...props}:InputProps){
-    const id = useId()
-    return (
-        <>
-            <label className={`${labelStyles}`} htmlFor={id}>{label}</label>
-            <input type={type} className={`input border ${inputStyles}`} name={name} value={value} onChange={onChange} id={id} placeholder={placeholder} {...props} />
-        </>
-    )
-}
+
+const Input = forwardRef(
+    function Input({label, type="text", labelStyles, placeholder, inputStyles, name, value, onChange, ...props}:InputProps, ref){
+        const id = useId()
+        return (
+            <>
+                <label className={`${labelStyles}`} htmlFor={id}>{label}</label>
+                <input type={type} className={`input border ${inputStyles}`} name={name} value={value} onChange={onChange} id={id} placeholder={placeholder} ref={ref} {...props} />
+            </>
+        )
+    }
+)
+
+
 
 export default Input;
 

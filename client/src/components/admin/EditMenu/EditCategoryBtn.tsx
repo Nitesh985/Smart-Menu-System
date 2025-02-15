@@ -17,19 +17,18 @@ function EditCategoryBtn({
 
     const handleClick = () => {
         setShowCategoryForm(true);
-        (document.getElementById(categoryId) as HTMLFormElement).showModal();
     }
 
   return (
     <>
         <Button
-          className={`flex justify-center items-center rounded-full bg-yellow-400 hover:bg-yellow-300 border-none`}
+          className={`flex justify-center items-center rounded-full bg-yellow-400 hover:bg-yellow-300 border-none text-white`}
           onClick={handleClick}
         >
           <FaEdit size={20} />
         </Button>
         {showCategoryForm && (
-        <Modal id={categoryId}>
+        <Modal isOpen={showCategoryForm} title="Edit Category" onClose={()=>setShowCategoryForm(false)}>
           <EditCategory
             categoryId={categoryId}
             setCategoryUpdated={setCategoryUpdated}

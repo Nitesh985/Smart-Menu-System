@@ -46,7 +46,14 @@ const makeOrder = asyncHandler(async (req, res) => {
 });
 
 const getAllOrders = asyncHandler(async (req, res) => {
+  const {status} = req.query
+
   const orders = await Order.aggregate([
+    {
+      $match:{
+        status:status?.toUpperCase()
+      }
+    },
     {
       $lookup: {
         from: "tables",

@@ -1,5 +1,6 @@
 import React from 'react'
 import { Image } from '../..'
+import UnknownImage from '../../../assets/no-image-found.png'
 
 export interface CategoryProps{
   _id: string;
@@ -14,7 +15,7 @@ export interface CategoryProps{
 
 function CategoryItem({image}:CategoryProps) {
   return (
-      <Image imageUrl={image.url} className="w-16 h-16 rounded-full" />
+      <Image imageUrl={image?.url || UnknownImage} className="w-16 h-16 rounded-full" />
   )
 }
 

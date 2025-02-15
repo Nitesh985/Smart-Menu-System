@@ -1,18 +1,16 @@
 import { createContext, useCallback, useContext, useState } from "react";
 
 
-const ModalContext = createContext(null)
+const ModalContext = createContext<null | {showModal: (id:string)=>void}>(null)
 
 export const ModalProvider = ({children}:{children:React.ReactNode}) => {
-    const [isOpen, setIsOpen] = useState(false)
 
- 
-    const showModal = () => {
-        document.getElementById("my_modal_1").showModal()
+    const showModal = (id:string) => {
+        (document.getElementById(id) as HTMLFormElement)?.showModal()
     }
 
 
-    return <ModalContext.Provider value={{isOpen, showModal }}>
+    return <ModalContext.Provider value={{showModal}}>
         {children}
     </ModalContext.Provider>;
 };

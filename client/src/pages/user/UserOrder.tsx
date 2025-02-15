@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import { deleteOrder, getOrder, updateOrder } from "../../api/order"
-import { TbUserEdit } from "react-icons/tb";
+import { TbRefresh, TbUserEdit } from "react-icons/tb";
 import { Button, Loading } from "../../components"
 import { MdDelete } from "react-icons/md";
 import useOrderContext from "../../context/OrderContext";
@@ -62,8 +62,7 @@ function UserOrder() {
         setLoading(false)
       })}
   }
-
-  useEffect(()=>{
+  const fetchOrders = () => {
     setLoading(true)
     if (orderId){
     getOrder(orderId)
@@ -72,6 +71,10 @@ function UserOrder() {
       })
     .finally(()=>setLoading(false))
     }
+  }
+
+  useEffect(()=>{
+    fetchOrders()
   }, [orderId])
 
   // useEffect(()=>{
@@ -91,9 +94,10 @@ function UserOrder() {
 
   return (
     <div className="p-8">
-      <h1 className="roboto-bold text-5xl text-center" >My Order</h1>      
+      <h1 className="roboto-bold text-5xl text-center" >My Order</h1>
+      <Button onClick={fetchOrders}><TbRefresh /></Button>    
       <div className="border py-10 px-14 mt-7 rounded-badge border-dotted border-slate-600 bg-opacity-60 text-black">
-        <h3 >Order Type: {order?.orderType}</h3>
+        <h3 >Status: {order?.status}</h3>
         {order?.note && <h3>Note: {order.note}</h3>}
         <h3>Total Price: <span className="text-green-600" >₹{order?.totalPrice}</span></h3>
         <h3>Table Number: {order?.table_no}</h3>

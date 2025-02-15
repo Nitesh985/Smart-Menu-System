@@ -14,7 +14,7 @@ function OrderDetails() {
 
   useEffect(()=>{
     setLoading(true);
-    (selectedType==="All"?getOrders():getOrdersByType(selectedType))
+    (getOrders("status=ACCEPTED"))
     .then(res=>{
       setOrders(res.data)
     })
@@ -28,12 +28,7 @@ function OrderDetails() {
   return (
     <>
       <div className="mt-3 flex justify-center">
-        <SelectOptions
-          className="flex bg-black"
-          optionStyles="bg-black text-white"
-          options={options}
-          onChange={(e)=>{setSelectedType(e.currentTarget.value)}}
-        />
+        <h1 className="font-bold text-2xl" >Kitchen</h1>
       </div>
       <div className="mt-10 " >
         {orders.length>0 && orders.map(order=>(

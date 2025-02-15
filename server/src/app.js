@@ -23,6 +23,7 @@ import orderRouter from './routes/order.routes.js'
 import categoryRouter from './routes/category.routes.js'
 import paymentRouter from './routes/payment.routes.js'
 import tableRouter from './routes/table.routes.js'
+import userRouter from './routes/user.routes.js'
 
 
 app.use("/api/v1/dishes", dishRouter)
@@ -30,6 +31,7 @@ app.use("/api/v1/orders", orderRouter)
 app.use("/api/v1/categories", categoryRouter)
 app.use("/api/v1/payment", paymentRouter)
 app.use("/api/v1/tables", tableRouter)
+app.use("/api/v1/users", userRouter)
 app.use("/api/v1/test", (req,res)=>{
     return res.status(200).json({
         message:"Everything is okay",

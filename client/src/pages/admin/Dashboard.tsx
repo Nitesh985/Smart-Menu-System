@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { getAllTables } from "../../api/table";
-import { Loading, QRCode } from "../../components";
+import { Loading } from "../../components";
+import QRCode from "react-qr-code";
 
 type TableType = {
   _id: string;
@@ -22,16 +23,14 @@ function Dashboard() {
     <div>
       <div className="flex flex-wrap justify-between gap-10 p-5" >
         {tables.map((table) => (
-          <div className="border w-[300px] h-[400px] flex flex-col justify-center items-center" >
-            <p className="text-3xl text-center font-bold text-orange-600 mb-5" >{table.table_no}</p>
-            <QRCode url={window.location.href.split("admin")[0] + "data?id=" + table._id} />
+          <div className="w-[300px] h-[400px] flex flex-col justify-center items-center" >
+            <p className="text-3xl text-center font-bold mb-5" >{table.table_no}</p>
+            <QRCode value={window.location.href.split("admin")[0] + "data?id=" + table._id} />
           </div>
         ))}
       </div>
-      {/* <QRCodeSVG
-      title="qr"
-      value={window.location.href.split("admin")[0] + `data?id=67906f8be6a0ce8e691c0be6`}
-       />
+      {
+      /*
       <QRCode
       logoPaddingStyle='circle'
       qrStyle='dots'

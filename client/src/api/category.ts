@@ -53,8 +53,7 @@ async function createCategory(formData: any) {
         "Content-Type": "multipart/form-data",
       },
     });
-    console.log(response.data?.data);
-    return response.data?.data;
+    return response.data;
   } catch (error) {
     console.log(error);
     if (error instanceof AxiosError) {
