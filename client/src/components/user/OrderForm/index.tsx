@@ -51,8 +51,10 @@ function OrderForm({...order}) {
     .then((res)=>{
         if (res.success && res.statusCode===200){
           alert("Your update was successfull")
+          setOrderEditingMode(false)
           clearCart()
-          navigate("/")}
+          navigate("/")
+        }
           })
       .catch((error) => {
         console.log(error);

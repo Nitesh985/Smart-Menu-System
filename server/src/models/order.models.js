@@ -22,9 +22,10 @@ const orderSchema = new Schema({
         ref:"Table",
         required: true
     },
-    orderType: {
-        type: String,
-        enum: ["Delivery", "Take Away", "Dine-In"]
+    orderedBy:{
+        type: Schema.Types.ObjectId,
+        ref:"User",
+        required: true
     },
     isEditing:{
         type: Boolean,

@@ -6,8 +6,8 @@ import mongoose from "mongoose";
 
 
 const makeOrder = asyncHandler(async (req, res) => {
-  const { table_no, orderType, note, orderItems } = req.body;
-  const reqFields = ["table_no", "orderType", "orderItems"];
+  const { table_no, note, orderItems } = req.body;
+  const reqFields = ["table_no", "orderItems"];
 
   const findTable = await Table.findOne({
     table_no,
@@ -32,7 +32,7 @@ const makeOrder = asyncHandler(async (req, res) => {
 
   const order = await Order.create({
     tableId: findTable?._id,
-    orderType,
+    orderedBy:req.user._id,
     note,
     orderItems,
     totalPrice: orderItems

@@ -23,7 +23,6 @@ function Orders() {
   const {setOrderId} = useOrderContext();
   const {tableNo} = useTableContext()
   const [note, setNote] = useState("");
-  const [orderType, setOrderType] = useState("Delivery");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate()
   const [isOpen, setIsOpen] = useState(false)
@@ -40,7 +39,6 @@ function Orders() {
     }));
     const data = {
       table_no:tableNo,
-      orderType,
       note,
       orderItems,
     };
@@ -122,13 +120,6 @@ function Orders() {
         <form onSubmit={handleSubmit}>
         <div className="p-5">
         <h2 className="px-5 py-3" ><span className="font-bold" >Table no:</span> {tableNo?<span>{tableNo}</span>:<span>No table no was found!</span>}</h2>
-        <Select
-          name="orderType"
-          value={orderType}
-          onChange={(e) => setOrderType(e.currentTarget.value)}
-          options={["Delivery", "Take Away", "Dine-In"]}
-          className="mt-5 rounded-3xl indent-2"
-        />
         <Input
           name="note"
           placeholder="Note"
