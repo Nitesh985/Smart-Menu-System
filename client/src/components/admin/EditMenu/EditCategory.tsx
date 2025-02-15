@@ -47,9 +47,6 @@ function EditCategory({ categoryId, setCategoryUpdated }: EditCategoryProps) {
 
   return (
     <>
-      <div className="text-center font-extrabold text-3xl text-txtColor-200 opacity-90">
-        Edit Category
-      </div>
       <CategoryForm
         handleSubmit={handleSubmit}
         formData={formData}

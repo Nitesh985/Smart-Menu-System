@@ -41,8 +41,8 @@ function SignUpForm({onClose}:SignUpFormProps) {
           console.log(res.data.token)
           dispatch(setToken(res.data.token))
           dispatch(login({userData:res.data}))
-          onClose()
         })
+        .then(()=>onClose())
         .catch(error=>{
           console.log(error)
           if (error.response.status===400 && error.response.data.message==="Invalid email!"){

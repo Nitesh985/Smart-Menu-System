@@ -49,13 +49,13 @@ const registerUser = asyncHandler(async (req, res)=>{
         }
       });
       
-    const emailSend = await sendEmail(email.toLowerCase(), username)
+    // const emailSend = await sendEmail(email.toLowerCase(), username)
 
-    if (!emailSend) {
-        throw new ApiError(400, "Invalid email!");
-    }
+    // if (!emailSend) {
+    //     throw new ApiError(400, "Invalid email!");
+    // }
     
-    console.log(emailSend)
+    // console.log(emailSend)
     const user = await User.create({email:email.toLowerCase(), username, address, contactNo})
     console.log(user)
 

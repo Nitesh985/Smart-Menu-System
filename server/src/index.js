@@ -1,5 +1,5 @@
-import app from "./app.js";
 import "dotenv/config.js";
+import app from "./app.js";
 import { connectToDB } from "./db/index.js";
 import { Category } from "./models/category.models.js";
 import { Table } from "./models/table.models.js";
@@ -63,4 +63,3 @@ connectToDB()
   .catch((error) => {
     console.log("Connection to Mongodb failed ::", error);
   })
-

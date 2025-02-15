@@ -67,7 +67,6 @@ function Orders() {
       setIsOpen(true)
       return
     }
-    console.log(token)
     placeOrder()
 
     }
@@ -135,8 +134,13 @@ function Orders() {
           Check Out
         </Button>
       </form>
-        <Modal title="Sign Up" isOpen={isOpen} onClose={()=>setIsOpen(false)}>
-          <SignUpForm onClose={()=>setIsOpen(false)} />
+        <Modal title="Sign Up" isOpen={isOpen} onClose={()=>{
+          setIsOpen(false)
+        }}>
+          <SignUpForm onClose={()=>{
+            setIsOpen(false)
+            placeOrder()
+            }} />
         </Modal>
       {loading && <Loading />}
     </div>
