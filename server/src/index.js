@@ -10,6 +10,7 @@ import { Payment } from "./models/payment.models.js";
 // import { Server } from "socket.io";
 // import { sendEmail } from "./utils/Resend.js";
 import { Resend } from 'resend';
+import { Order } from "./models/order.models.js";
 
 // // const httpServer = http.createServer(app);
 
@@ -63,10 +64,7 @@ connectToDB()
     // });
 
   }).
-  then(async()=>{
-    const payment = await Payment.findOne({orderId:"67b159ec8025f33750841b70"})
-    console.log(payment)
-  })
+
   .catch((error) => {
     console.log("Connection to Mongodb failed ::", error);
   })
