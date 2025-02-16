@@ -44,7 +44,7 @@ function Modal({  title, titleStyles, children, isOpen, onClose, showAcceptRejec
     <>
       <dialog ref={modalRef} className="modal">
         <div className="modal-box">
-          <form method="dialog">
+          <form method="dialog ">
             {/* if there is a button in form, it will close the modal */}
             <button className="btn btn-sm text-sm btn-circle btn-ghost absolute right-4 top-3" onClick={handleClose}>
               ✕

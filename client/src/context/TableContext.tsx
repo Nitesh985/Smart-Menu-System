@@ -23,6 +23,8 @@ export const TableProvider = ({ children }: { children: React.ReactNode }) => {
     }
   }, []);
 
+
+
   useEffect(() => {
     localStorage.setItem("tableId", tableId);
     localStorage.setItem("tableNo", tableNo);

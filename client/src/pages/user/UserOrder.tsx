@@ -1,10 +1,12 @@
-import { useEffect, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { deleteOrder, getOrder, updateOrder } from "../../api/order"
 import { TbRefresh, TbUserEdit } from "react-icons/tb";
 import { Button, Loading } from "../../components"
 import { MdDelete } from "react-icons/md";
 import useOrderContext from "../../context/OrderContext";
 import { useNavigate } from "react-router-dom";
+import GiveReview from "../../components/user/UserOrder/GiveReview";
+import PaymentGateway from "../../components/user/UserOrder/PaymentGateway";
 
 export interface FetchOrderType{
   _id:string;
@@ -62,7 +64,7 @@ function UserOrder() {
         setLoading(false)
       })}
   }
-  const fetchOrders = () => {
+  const fetchOrders = useCallback(() => {
     setLoading(true)
     if (orderId){
     getOrder(orderId)
@@ -71,11 +73,11 @@ function UserOrder() {
       })
     .finally(()=>setLoading(false))
     }
-  }
+  }, [orderId])
 
   useEffect(()=>{
     fetchOrders()
-  }, [orderId])
+  }, [fetchOrders])
 
   // useEffect(()=>{
 
@@ -86,16 +88,16 @@ function UserOrder() {
   //     })    
   // }, [tableId])
 
-  if (loading) return <Loading />
+  // if (loading) return <Loading />
 
-  if (!order) return <div className="flex justify-center items-center h-screen" >
-    <h1 className="text-5xl roboto-bold" >There was no order</h1>
-  </div>
+  // if (!order) return <div className="flex justify-center items-center h-screen" >
+  //   <h1 className="text-5xl roboto-bold" >There was no order</h1>
+  // </div>
 
   return (
     <div className="p-4 sm:p-8">
       <h1 className="roboto-bold text-5xl text-center" >My Order</h1>
-      <Button onClick={fetchOrders}><TbRefresh /></Button>    
+      <Button onClick={fetchOrders} className="bg-green-600 border-none hover:bg-green-500 " ><TbRefresh /></Button>    
       <div className="border py-5 sm:py-10 px-7 sm:px-14 mt-7 rounded-badge border-dotted border-slate-600 bg-opacity-60 text-black">
         <h3 >Status: {order?.status}</h3>
         {order?.note && <h3>Note: {order.note}</h3>}
@@ -125,6 +127,13 @@ function UserOrder() {
         </Button>
       </div>}
       </div>
+        { order?.status==="READY" && <>
+          <div className="divider font-semibold" >Payment Options</div>
+          <PaymentGateway orderId={order?._id} totalPrice={order?.totalPrice} />
+          <div className="divider" ></div>
+                <h3 className="text-xl font-semibold px-6 mt-16" >Please tell us about your experience</h3>
+                <GiveReview />
+        </>}
       </div>
   )
 }

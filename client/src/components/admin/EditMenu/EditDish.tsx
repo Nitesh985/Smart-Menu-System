@@ -19,6 +19,7 @@ function EditDish({ dishId, setDishUpdated }: EditDishProps) {
     price: null,
     category: null,
     image: null,
+    quantity:null,
   });
   const [loading, setLoading] = useState(false)
     useEffect(()=>{

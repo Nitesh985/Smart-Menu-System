@@ -24,6 +24,7 @@ import {
   IndexPage,
   PaymentFailurePage,
   PaymentSuccessPage,
+  Feedbacks,
 } from "./pages";
 import { ModalProvider } from "./context/ModalContext.tsx";
 import { CartProvider } from "./context/CartContext.tsx";
@@ -43,8 +44,9 @@ const router = createBrowserRouter(
         <Route path="orders/" element={<Orders />}>
           <Route path="" element={<OrderList />} />
         </Route>
-          <Route path="kitchen" element={<OrderDetails />} />
-      </Route>
+        <Route path="kitchen" element={<OrderDetails />} />
+        <Route path="feedbacks" element={<Feedbacks />} />
+        </Route>
       <Route path="" element={<App />}>
         <Route path="/:categoryId" />
       </Route>

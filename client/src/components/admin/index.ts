@@ -8,7 +8,7 @@ import RemoveDishBtn from "./EditMenu/RemoveDishBtn";
 import EditDishBtn from "./EditMenu/EditDishBtn";
 import EditDish from "./EditMenu/EditDish";
 import EditCategory from './EditMenu/EditCategory'
-
+import FeedbackComponent from "./Feedbacks/FeedbackComponent";
 export {
     //Orders
     OrderList,
@@ -23,4 +23,6 @@ export {
     CreateCategory,
     RemoveDishBtn,
     EditCategory,
+    // Feedbacks
+    FeedbackComponent
 }

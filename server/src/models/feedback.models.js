@@ -6,11 +6,6 @@ const feedbackSchema = new Schema({
         ref:"User",
         required: true
     },
-    orderId:{
-        type: Schema.Types.ObjectId,
-        ref:"User",
-        required: true
-    },
     message:{
         type: String,
         required: true

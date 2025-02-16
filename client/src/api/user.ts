@@ -6,6 +6,7 @@ export const userApi = axios.create({
 });
 
 
+
 const registerUser = async ({...data})=> {
     try{
         const response = await userApi.post(`/sign-up`, {...data});

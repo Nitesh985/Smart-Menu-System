@@ -26,9 +26,7 @@ function DishList() {
               <tr
                 key={dish._id}
                 className={
-                  index === 0
-                    ? `bg-slate-300 group flex items-center`
-                    : "group flex items-center"
+                  "group flex items-center"
                 }
               >
                 <td className="flex space-x-2 justify-center items-center ">

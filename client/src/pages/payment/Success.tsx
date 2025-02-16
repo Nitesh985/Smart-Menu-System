@@ -2,9 +2,11 @@ import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import {base64Decode} from "esewajs"
 import axios from "axios";
+import { Modal } from "../../components";
 const Success = () => {
   const [isSuccess, setIsSuccess] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [isModalOpen, setIsModalOpen] = useState(false)
   const navigate = useNavigate();
   const location = useLocation();
   // Create a new URLSearchParams object using the search string from location
@@ -17,39 +19,36 @@ const Success = () => {
       const response = await axios.post(
         "/api/v1/payment/payment-status",
         {
-          product_id: decoded.transaction_uuid,
+          orderId: decoded.transaction_uuid,
         }
       );
       if (response.status === 200) {
-        setIsLoading(false);
         setIsSuccess(true);
       }
-    } catch (error) {
+    } finally {
+      setIsModalOpen(true)
       setIsLoading(false);
-      console.error("Error initiating payment:", error);
     }
   };
   useEffect(() => {
     verifyPaymentAndUpdateStatus();
   }, []);
-  if (isLoading && !isSuccess) return <>Loading...</>;
-  if (!isLoading && !isSuccess)
-    return (
-      <>
-        <h1>Oops!..Error occurred on confirming payment</h1>
-        <h2>We will resolve it soon.</h2>
-        <button onClick={() => navigate("/")} className="go-home-button">
-          Go to Homepage
-        </button>
-      </>
-    );
+  if (isLoading) return <>Loading...</>;
+  
   return (
     <div>
-      <h1>Payment Successful!</h1>
-      <p>Thank you for your payment. Your transaction was successful.</p>
-      <button onClick={() => navigate("/")} className="go-home-button">
-        Go to Homepage
-      </button>
+      <Modal isOpen={isModalOpen} title="Successful!" titleStyles="text-lg" showAcceptBtn={true} onClose={()=>{
+        setIsModalOpen(false)
+        navigate("/")
+        }}
+         handleAccept={()=>{
+          setIsModalOpen(false)
+          navigate("/")
+          }}
+          acceptLabel="Okay"
+          >
+        <p className="mt-4" >Thank you for your payment. Your transaction was successful.</p>
+      </Modal>
     </div>
   );
 };

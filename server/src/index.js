@@ -2,7 +2,10 @@ import "dotenv/config.js";
 import app from "./app.js";
 import { connectToDB } from "./db/index.js";
 import { Category } from "./models/category.models.js";
+import { Dish } from "./models/dish.models.js";
+import { User } from "./models/user.models.js";
 import { Table } from "./models/table.models.js";
+import { Payment } from "./models/payment.models.js";
 // import http from "http";
 // import { Server } from "socket.io";
 // import { sendEmail } from "./utils/Resend.js";
@@ -59,7 +62,14 @@ connectToDB()
     //   });
     // });
 
+  }).
+  then(async()=>{
+    const payment = await Payment.findOne({orderId:"67b159ec8025f33750841b70"})
+    console.log(payment)
   })
   .catch((error) => {
     console.log("Connection to Mongodb failed ::", error);
   })
+
+
+

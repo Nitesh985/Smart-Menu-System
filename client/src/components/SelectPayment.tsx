@@ -10,15 +10,15 @@ export type paymentOptionType = {
 };
 
 interface SelectPaymentProps {
-  paymentMethod: "CASH" | "ESEWA" | "";
+  paymentType: "CASH" | "ESEWA";
   paymentOptions: paymentOptionType[];
-  setPaymentMethod: React.Dispatch<React.SetStateAction<"CASH" | "ESEWA" | "">>;
+  setPaymentType: React.Dispatch<React.SetStateAction<"CASH" | "ESEWA" | "">>;
 }
 
 const SelectPayment = ({
-  paymentMethod,
+  paymentType,
   paymentOptions,
-  setPaymentMethod,
+  setPaymentType,
 }: SelectPaymentProps) => {
   return (
     <div className="w-[300px] p-2 aspect-square rounded-lg shadow flex flex-col items-center justify-center gap-2 bg-slate-50">
@@ -44,8 +44,7 @@ const SelectPayment = ({
             className="checked:text-indigo-500 checked:ring-0 checked:ring-current focus:ring-0 focus:ring-current"
             name="payment"
             type="radio"
-            checked={item.value===paymentMethod}
-            onClick={() => setPaymentMethod(item.value)}
+            onClick={() => setPaymentType(item.value)}
           />
         </label>
       ))}

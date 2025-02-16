@@ -21,6 +21,17 @@ export const OrderProvider = ({ children }: { children: React.ReactNode }) => {
     localStorage.setItem("orderId", orderId);
   }, [orderId]);
 
+  const handleBeforeUnload = (event) => {
+    localStorage.removeItem("orderId");
+};
+
+useEffect(() => {
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    return () => {
+        window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+}, []);
+
 
 
   return (

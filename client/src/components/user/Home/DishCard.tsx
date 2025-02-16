@@ -30,7 +30,7 @@ const HighlightQuery = ({query, word}:{query:string, word:string}) => {
 
 }
 
-function DishCard({ _id, name, image, price }: DishProps) {
+function DishCard({ _id, name, image, price, stock }: DishProps) {
   const { addToCart, editCartItem, getDishQuantity, removeFromCart } = useCartContext();
   const {searchedQuery} = useSearchContext()
   const [quantity, setQuantity] = useState<number>(getDishQuantity(_id) || 0);
@@ -42,7 +42,7 @@ function DishCard({ _id, name, image, price }: DishProps) {
   };
 
   const addQuantity = () => {
-    setQuantity((prevQuantity) => prevQuantity + 1);
+    setQuantity((prevQuantity) => stock?Math.min(stock, prevQuantity + 1):prevQuantity+1);
   };
 
   const subQuantity = () => {

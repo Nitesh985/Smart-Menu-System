@@ -32,7 +32,7 @@ function DishDescriptionPage() {
     };
     
     const addQuantity = () => {
-      setQuantity((prevQuantity) => prevQuantity + 1);
+      setQuantity((prevQuantity) => dish?.stock?Math.min(prevQuantity + 1, dish?.stock):prevQuantity+1);
     };
   
     const subQuantity = () => {
@@ -71,6 +71,7 @@ function DishDescriptionPage() {
               <Emoji>🍜</Emoji>
               {dish.name}
             </DishTitle>
+            {dish?.stock && <div>Items left: {dish?.stock}</div>}
             <DishPrice>Rs{dish.price}</DishPrice>
           </DishDetails>
           <DishDescription className="h-screen" >{dish.description}</DishDescription>
@@ -102,7 +103,7 @@ const CardWrapper = styled.div`
   background-color: white;
   color: white; 
   font-family: Arial, sans-serif;
-  height: 100vh; /* Make the wrapper fill the full viewport height */
+   height: 100vh;/* Make the wrapper fill the full viewport height */
   width: 100%;
   overflow: hidden; /* Prevent unnecessary scrolling */
 `;
@@ -142,7 +143,7 @@ const DishContainer = styled.div`
 
 const DishImage = styled.img`
   width: 100%;
-  height: auto;
+  height: 50%;
 `;
 
 const DishDetails = styled.div`

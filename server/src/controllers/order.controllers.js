@@ -24,7 +24,9 @@ const makeOrder = asyncHandler(async (req, res) => {
   }
 
   orderItems.map(async (food) => {
-    const foodItem = await Dish.findById(food._id);
+    const foodItem = await Dish.findByIdAndUpdate(food._id, {
+      $inc: { stock: -food.quantity },
+    });
     if (!foodItem) {
       throw new ApiError(404, `The food with id ${food._id} is not found.`);
     }
@@ -245,6 +247,100 @@ const getOrders = asyncHandler(async (req, res) => {
 
 const getOrder = asyncHandler(async (req, res) => {
   const { orderId } = req.params;
+
+  // const order = await Order.aggregate([
+  //   {
+  //     $match: {
+  //       orderedBy: req.user?._id
+  //     },
+  //   },
+  //   {
+  //     $lookup: {
+  //       from: "tables",
+  //       localField: "tableId",
+  //       foreignField: "_id",
+  //       as: "table_no",
+  //     },
+  //   },
+  //   {
+  //     $addFields: {
+  //       table_no: {
+  //         $first: "$table_no.table_no",
+  //       },
+  //     },
+  //   },
+  //   {
+  //     $lookup: {
+  //       from: "dishes",
+  //       localField: "orderItems._id",
+  //       foreignField: "_id",
+  //       as: "dishes",
+  //     },
+  //   },
+  //   {
+  //     $lookup:{
+  //       from: "payments",
+  //       localField: "_id",
+  //       foreignField: "orderId",
+  //       as: "payment"
+  //     }
+  //   },
+  //   {
+  //     $addFields:{
+  //       payment:{
+  //         $first:"$payment"
+  //       }
+  //     }
+  //   },
+  //   {
+  //     $project: {
+  //       _id: 1,
+  //       table_no: 1,
+  //       orderType: 1,
+  //       note: 1,
+  //       totalPrice: 1,
+  //       payment:1,
+  //       status:1,
+  //       isEditing:1,
+  //       orderItems: {
+  //         $map: {
+  //           input: "$dishes",
+  //           in: {
+  //             $let: {
+  //               vars: {
+  //                 m: {
+  //                   $arrayElemAt: [
+  //                     {
+  //                       $filter: {
+  //                         input: "$orderItems",
+  //                         cond: {
+  //                           $eq: ["$$mb._id", "$$this._id"],
+  //                         },
+  //                         as: "mb",
+  //                       },
+  //                     },
+  //                     0,
+  //                   ],
+  //                 },
+  //               },
+  //               in: {
+  //                 $mergeObjects: [
+  //                   "$$this",
+  //                   {
+  //                     quantity: "$$m.quantity",
+  //                   },
+  //                 ],
+  //               },
+  //             },
+  //           },
+  //         },
+  //       },
+  //     },
+  //   },
+  // ])
+
+
+
   const order = await Order.aggregate([
     { 
       $match: {
@@ -346,13 +442,20 @@ const getOrder = asyncHandler(async (req, res) => {
 
 const updateOrder = asyncHandler(async (req, res) => {
   const { orderId } = req.params;
+
+  const order = await Order.findById(orderId)
+
+  if (!order) {
+    throw new ApiError(404, "Order not found!");
+  }
+  if (order.status === 'READY'){
+    throw new ApiError(400, "Cannot update a completed order!");
+  }
+  
   const updatedOrder = await Order.findByIdAndUpdate(orderId, req.body, {
     new: true,
   });
 
-  if (!updatedOrder) {
-    throw new ApiError(404, "Order not found!");
-  }
 
   return res
     .status(200)
@@ -362,7 +465,23 @@ const updateOrder = asyncHandler(async (req, res) => {
 const deleteOrder = asyncHandler(async (req, res) => {
   const { orderId } = req.params;
 
-  const deleteOrder = await Order.findByIdAndDelete(orderId)
+  const order = await Order.findById(orderId)
+
+  if (!order) {
+    throw new ApiError(404, "Order not found!");
+  }
+ 
+  const dishes = await Dish.find({ _id: { $in: order.orderItems.map((item) => item._id) } });
+
+
+  dishes.forEach(async (dish) => {
+    if (dish?.stock){
+      await Dish.findByIdAndUpdate(dish._id, {
+      $inc: { stock: dish.quantity },
+    });}
+  });
+
+  const deleteOrder = await Order.findByIdAndDelete(orderId);
 
 
   if (!deleteOrder) {
