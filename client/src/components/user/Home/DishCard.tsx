@@ -42,7 +42,12 @@ function DishCard({ _id, name, image, price, stock }: DishProps) {
   };
 
   const addQuantity = () => {
-    setQuantity((prevQuantity) => stock?Math.min(stock, prevQuantity + 1):prevQuantity+1);
+    setQuantity((prevQuantity) => {
+      if (stock===0){
+        return prevQuantity
+      }
+      return stock?Math.min(stock, prevQuantity + 1):(prevQuantity+1)
+    });
   };
 
   const subQuantity = () => {

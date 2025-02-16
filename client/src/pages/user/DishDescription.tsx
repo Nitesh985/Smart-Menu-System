@@ -32,7 +32,12 @@ function DishDescriptionPage() {
     };
     
     const addQuantity = () => {
-      setQuantity((prevQuantity) => dish?.stock?Math.min(prevQuantity + 1, dish?.stock):prevQuantity+1);
+      setQuantity((prevQuantity) => {
+        if (dish?.stock===0){
+          return prevQuantity
+        }
+        return dish?.stock?Math.min(dish?.stock, prevQuantity + 1):(prevQuantity+1)
+      });;
     };
   
     const subQuantity = () => {

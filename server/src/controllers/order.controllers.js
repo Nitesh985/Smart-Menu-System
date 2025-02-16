@@ -5,6 +5,17 @@ import { Table } from "../models/table.models.js";
 import mongoose from "mongoose";
 
 
+function getUpdates (items1, items2){
+  return items2.map((item2) => {
+   const toUpdate = items1.find((item1) => item2._id === item1._id);
+   if (toUpdate) {
+     return { ...item2, quantity:item2.quantity - toUpdate.quantity}
+   }
+   return {_id:item2._id, quantity:item2.quantity};
+ });
+}
+
+
 const makeOrder = asyncHandler(async (req, res) => {
   const { table_no, note, orderItems } = req.body;
   const reqFields = ["table_no", "orderItems"];
@@ -451,7 +462,22 @@ const updateOrder = asyncHandler(async (req, res) => {
   if (order.status === 'READY'){
     throw new ApiError(400, "Cannot update a completed order!");
   }
-  
+
+  const {orderItems} = req.body
+
+  if (orderItems){
+    const updatedItems = getUpdates(order.orderItems, orderItems)
+
+    const dishes = await Dish.find({ _id: { $in: updatedItems.map((item) => item._id) } });
+    dishes.forEach(async (dish) => {
+      if (dish?.stock){
+        await Dish.findByIdAndUpdate(dish._id, {
+        $inc: { stock: -dish.quantity },
+      });}
+    });
+  }
+
+
   const updatedOrder = await Order.findByIdAndUpdate(orderId, req.body, {
     new: true,
   });
