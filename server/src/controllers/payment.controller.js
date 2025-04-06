@@ -75,15 +75,15 @@ const paymentStatus = asyncHandler(async (req, res) => {
       return res.status(400).json({ message: "Transaction not found" });
     }
 
-    // const paymentStatusCheck = await EsewaCheckStatus(payment.amount, payment.orderId, process.env.MERCHANT_ID, process.env.ESEWAPAYMENT_STATUS_CHECK_URL)
+    const paymentStatusCheck = await EsewaCheckStatus(payment.amount, payment.orderId, process.env.MERCHANT_ID, process.env.ESEWAPAYMENT_STATUS_CHECK_URL)
 
-    // if (paymentStatusCheck.status === 200) {
-      payment.status = "COMPLETE";
+    if (paymentStatusCheck.status === 200) {
+      payment.status = paymentStatusCheck.data.status;
       await payment.save();
       return res
         .status(200)
         .json(new ApiResponse(200, {}, "Transaction status updated successfully" ));
-    // }
+    }
 })
 
 

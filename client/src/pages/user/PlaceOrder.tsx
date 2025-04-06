@@ -14,6 +14,7 @@ import { showModal } from "../../components/utils/Modal";
 import Dialog from '../../components/Dialog'
 import {SignUpForm} from "../../components";
 import { useAppSelector } from "../../store/hooks";
+import { socket } from "../../App";
 
 
 
@@ -49,6 +50,7 @@ function Orders() {
       setOrderId(res.data._id)
         if (res.statusCode===201 && res.success){
           alert("The order was successfully placed!")
+          socket.emit("order-placed", res.data._id)
           clearCart()
           navigate("/")
         }

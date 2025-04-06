@@ -2,6 +2,7 @@ import { useEffect, useState } from "react"
 import { getOrders, getOrdersByType } from "../../../api/order"
 import { OrderItemProps } from './OrderItem';
 import OrderDetailItem from "./OrderDetailItem";
+import { socket } from "../../../App";
 import { Loading, SelectOptions } from "../..";
 
 const options = ["All", "Dine-In", "Take-Away", "Delivery"]
@@ -12,14 +13,21 @@ function OrderDetails() {
   const [loading, setLoading] = useState(false)
   const [ordersUpdated, setOrdersUpdated] = useState(false)
 
+  // useEffect(()=>{
+  //   setLoading(true);
+  //   (getOrders("status=ACCEPTED"))
+  //   .then(res=>{
+  //     setOrders(res.data)
+  //   })
+  //   .finally(()=>setLoading(false))
+  // }, [ordersUpdated, selectedType])
+
   useEffect(()=>{
-    setLoading(true);
-    (getOrders("status=ACCEPTED"))
-    .then(res=>{
-      setOrders(res.data)
+    socket.on("kitchen", (orders)=>{
+      setOrders(orders)
     })
-    .finally(()=>setLoading(false))
-  }, [ordersUpdated, selectedType])
+  }, [])
+
 
   console.log(orders)
 

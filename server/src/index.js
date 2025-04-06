@@ -6,14 +6,19 @@ import { Dish } from "./models/dish.models.js";
 import { User } from "./models/user.models.js";
 import { Table } from "./models/table.models.js";
 import { Payment } from "./models/payment.models.js";
-// import http from "http";
-// import { Server } from "socket.io";
+import http from "http";
+import { Server } from "socket.io";
 // import { sendEmail } from "./utils/Resend.js";
 import { Resend } from 'resend';
 import { Order } from "./models/order.models.js";
 
-// // const httpServer = http.createServer(app);
+const httpServer = http.createServer(app);
 
+export const socketIO = new Server(httpServer, {
+  cors: {
+    origin: "*",
+  },
+});
 // // // GETTING THE IP ADDRESS
 // // import { networkInterfaces } from 'os';
 
@@ -45,26 +50,34 @@ connectToDB()
       console.log(`The app is listening on http://localhost:${port}`);
     });
 
-    // const socketIO = new Server(httpServer, {
-    //   cors: {
-    //     origin: "*",
-    //   },
-    // });
 
-    // //Add this before the app.get() block
-    // socketIO.on("connection", (socket) => {
-    //   console.log(`⚡: ${socket.id} user just connected!`);
-    //   socket.emit('message', 'Welcome to the Smart Menu System')
-    //   socket.on('client-message', (clientMessage) => {
-    //     console.log(`Client message: ${clientMessage}`);
-    //   })
-    //   socket.on("disconnect", () => {
-    //     console.log("🔥: A user disconnected");
-    //   });
-    // });
+    //Add this before the app.get() block
+    socketIO.on("connection", (socket) => {
+      socket.on("order-placed", async (orderId)=>{
+        const order = await Order.findById(orderId)
+        socketIO.emit("order-status", order)
+        
+        const orders = await Order.find({status:"PENDING"})
+        socketIO.emit("reception", orders)
+      })
 
-  }).
+      socket.on("order-accepted", async (orderId)=>{
+        const order = await Order.findById(orderId)
+        socketIO.emit("order-status", order)
+        
 
+        const orders = await Order.find({status:"ACCEPTED"})
+        socketIO.emit("kitchen", orders)
+
+      })
+
+      socket.on("order-ready", async(orderId)=>{
+        const order = await Order.findById(orderId)
+        socketIO.emit("order-status", order)
+      })
+    });
+
+  })
   .catch((error) => {
     console.log("Connection to Mongodb failed ::", error);
   })

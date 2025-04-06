@@ -5,7 +5,7 @@ import Dashboard from "./admin/Dashboard";
 import NotFoundPage from "./not-found";
 import  Orders from "./admin/Orders";
 import EditMenu  from "./admin/EditMenu";
-import OrderDetails from "../components/admin/Orders/OrderDetails";
+import OrderDetails from "../components/admin/Orders/Kitchen";
 import Feedbacks from "./admin/Feedbacks";
 
 // user

@@ -33,7 +33,17 @@ const Success = () => {
   useEffect(() => {
     verifyPaymentAndUpdateStatus();
   }, []);
-  if (isLoading) return <>Loading...</>;
+  if (isLoading && !isSuccess) return <>Loading...</>;
+  if (!isLoading && !isSuccess)
+    return (
+      <>
+        <h1>Oops!..Error occurred on confirming payment</h1>
+        <h2>We will resolve it soon.</h2>
+        <button onClick={() => navigate("/")} className="go-home-button">
+          Go to Homepage
+        </button>
+      </>
+    );
   
   return (
     <div>

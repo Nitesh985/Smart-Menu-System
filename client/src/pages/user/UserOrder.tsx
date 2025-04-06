@@ -7,6 +7,9 @@ import useOrderContext from "../../context/OrderContext";
 import { useNavigate } from "react-router-dom";
 import GiveReview from "../../components/user/UserOrder/GiveReview";
 import PaymentGateway from "../../components/user/UserOrder/PaymentGateway";
+import { socket } from "../../App";
+
+
 
 export interface FetchOrderType{
   _id:string;
@@ -76,8 +79,11 @@ function UserOrder() {
   }, [orderId])
 
   useEffect(()=>{
-    fetchOrders()
-  }, [fetchOrders])
+    socket.on("order-status", (order)=>{
+      setOrder(order)
+    })
+
+  }, [])
 
   // useEffect(()=>{
 

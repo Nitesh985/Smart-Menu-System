@@ -9,6 +9,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import useTableContext from "../../../context/TableContext";
 import useOrderContext from "../../../context/OrderContext";
 import { RxCrossCircled } from "react-icons/rx";
+import { socket } from "../../../App";
 
 
 const removeNonUpdatedData = (newData:object, prevData:object) => {
@@ -54,6 +55,7 @@ function OrderForm({...order}) {
           setOrderEditingMode(false)
           clearCart()
           navigate("/")
+          socket.emit("order-placed", order._id)
         }
           })
       .catch((error) => {

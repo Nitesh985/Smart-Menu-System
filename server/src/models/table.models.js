@@ -6,6 +6,10 @@ const tableSchema = new Schema({
         type:String,
         required: true
     },
+    occupied:{
+        type:Boolean,
+        default:false
+    }
 }, { timestamps: true })
 
 

@@ -7,8 +7,8 @@ import { useEffect, useRef, useState } from "react";
 import { getAllDishes } from "./api/dish.ts";
 import { getAllCategories } from "./api/category.ts";
 // import { useEffect, useState } from 'react';
-// import {io} from 'socket.io-client';
-// const socket = io('http://localhost:3000');
+import {io} from 'socket.io-client';
+export const socket = io('http://localhost:3000');
 
 
 function App() {

@@ -5,6 +5,7 @@ import { getOrders } from "../../../api/order";
 import { OrderItemProps } from "./OrderItem";
 import { Link } from "react-router-dom";
 import { TbRefresh } from "react-icons/tb";
+import { socket } from "../../../App";
 
 const options = ["All", "Dine-In", "Take-Away", "Delivery"]
 
@@ -22,9 +23,15 @@ function OrderList() {
       .finally(() => setLoading(false));
   }
 
-  useEffect(() => {
-    fetchOrders()
-  }, [ordersUpdated]);
+  // useEffect(() => {
+  //   fetchOrders()
+  // }, [ordersUpdated]);
+
+  useEffect(()=>{
+    socket.on("reception", (orders)=>{
+      setUserOrders(orders)
+    })
+  }, [])
 
   return (
     <>
@@ -33,8 +40,7 @@ function OrderList() {
       </div>
       <Button onClick={fetchOrders}><TbRefresh /></Button>
       <div className="bg-primary-100 flex w-full cursor-pointer flex-wrap items-center justify-between p-7">
-        {userOrders.length > 0 &&
-          userOrders.map((order) => (
+        {userOrders.map((order) => (
               <OrderItem key={order._id} {...order} setOrdersUpdated={setOrdersUpdated} />
           ))}
         {loading && (
