@@ -77,13 +77,15 @@ const paymentStatus = asyncHandler(async (req, res) => {
 
     const paymentStatusCheck = await EsewaCheckStatus(payment.amount, payment.orderId, process.env.MERCHANT_ID, process.env.ESEWAPAYMENT_STATUS_CHECK_URL)
 
-    if (paymentStatusCheck.status === 200) {
+    if (paymentStatusCheck.status !== 200){
+      throw new ApiError(paymentStatusCheck.status, "Error checking the payment status")
+    }
       payment.status = paymentStatusCheck.data.status;
       await payment.save();
       return res
         .status(200)
         .json(new ApiResponse(200, {}, "Transaction status updated successfully" ));
-    }
+
 })
 
 

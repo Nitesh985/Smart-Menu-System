@@ -1,5 +1,5 @@
 import { RxCross2 } from "react-icons/rx"
-import Button from "../../Button"
+import Button from "../../tagUtils/Button"
 import { useState } from "react"
 import { deleteOrder } from "../../../api/order"
 import Modal from "../../Modal"

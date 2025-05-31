@@ -12,13 +12,14 @@ import { Server } from "socket.io";
 import { Resend } from 'resend';
 import { Order } from "./models/order.models.js";
 
-const httpServer = http.createServer(app);
+// const httpServer = http.createServer(app);
 
-export const socketIO = new Server(httpServer, {
-  cors: {
-    origin: "*",
-  },
-});
+// const socketIO = new Server(httpServer, {
+//   cors: {
+//     origin: "*",
+//   },
+// });
+
 // // // GETTING THE IP ADDRESS
 // // import { networkInterfaces } from 'os';
 
@@ -40,10 +41,35 @@ export const socketIO = new Server(httpServer, {
 // // }
 // // console.log(results["Wi-Fi"][0]) 
 connectToDB() 
-  .then(() => {
-    app.get("/", (req, res) => {
-      res.send("Welcome to the Smart Menu System");
-    });
+
+.then(() => {
+  //Add this before the app.get() block
+  // socketIO.on("connection", (socket) => {
+  //   socket.on("user-order", async (orderId)=>{
+  //     const order = await Order.findById(orderId)
+  //     console.log("Hey there!")
+  //     console.log(order)
+  //     socketIO.emit("order-status", order)
+      
+  //     const orders = await Order.find({status:"PENDING"})
+  //     socketIO.emit("reception", orders)
+  //   })
+  
+  //   socket.on("order-accepted", async (orderId)=>{
+  //     const order = await Order.findById(orderId)
+  //     socketIO.emit("order-status", order)
+      
+  
+  //     const orders = await Order.find({status:"ACCEPTED"})
+  //     socketIO.emit("kitchen", orders)
+  
+  //   })
+  
+  //   socket.on("order-ready", async(orderId)=>{
+  //     const order = await Order.findById(orderId)
+  //     socketIO.emit("order-status", order)
+  //   })
+  // });
 
     const port = process.env.PORT || 3000;
     app.listen(port, () => {
@@ -51,31 +77,6 @@ connectToDB()
     });
 
 
-    //Add this before the app.get() block
-    socketIO.on("connection", (socket) => {
-      socket.on("order-placed", async (orderId)=>{
-        const order = await Order.findById(orderId)
-        socketIO.emit("order-status", order)
-        
-        const orders = await Order.find({status:"PENDING"})
-        socketIO.emit("reception", orders)
-      })
-
-      socket.on("order-accepted", async (orderId)=>{
-        const order = await Order.findById(orderId)
-        socketIO.emit("order-status", order)
-        
-
-        const orders = await Order.find({status:"ACCEPTED"})
-        socketIO.emit("kitchen", orders)
-
-      })
-
-      socket.on("order-ready", async(orderId)=>{
-        const order = await Order.findById(orderId)
-        socketIO.emit("order-status", order)
-      })
-    });
 
   })
   .catch((error) => {

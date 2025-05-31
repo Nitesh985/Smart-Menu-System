@@ -1,9 +1,8 @@
 import { useCallback, useEffect, useState } from "react"
-import { deleteOrder, getOrder, updateOrder } from "../../api/order"
+import { deleteOrder, getOrder, getTableOrder, updateOrder } from "../../api/order"
 import { TbRefresh, TbUserEdit } from "react-icons/tb";
 import { Button, Loading } from "../../components"
 import { MdDelete } from "react-icons/md";
-import useOrderContext from "../../context/OrderContext";
 import { useNavigate } from "react-router-dom";
 import GiveReview from "../../components/user/UserOrder/GiveReview";
 import PaymentGateway from "../../components/user/UserOrder/PaymentGateway";
@@ -39,7 +38,6 @@ export interface FetchOrderType{
 function UserOrder() {
   const [order, setOrder] = useState<null | FetchOrderType>(null)
   const [loading, setLoading] = useState(false)
-  const {orderId, setOrderId, setOrderEditingMode} = useOrderContext()
   const navigate = useNavigate()
 
   
@@ -47,8 +45,6 @@ function UserOrder() {
     if (order){
       updateOrder(order._id, {isEditing:true})
       .then(()=>{
-        setOrderId(order._id)
-        setOrderEditingMode(true)
         navigate(`/edit-order/o/${order._id}`)
       }
       )
@@ -60,7 +56,6 @@ function UserOrder() {
         setLoading(true)
         deleteOrder(order?._id)
         .then(()=>{
-          setOrderId("")
           navigate("/")
         }).catch(err=>console.log(err))
         .finally(()=>{
@@ -69,17 +64,19 @@ function UserOrder() {
   }
   const fetchOrders = useCallback(() => {
     setLoading(true)
-    if (orderId){
-    getOrder(orderId)
-    .then(res=>{
-        setOrder(res.data[0])
-      })
+    // TODO:Get table Order
+    getTableOrder()
+    .then((order)=>{
+      setOrder(order)
+    })
     .finally(()=>setLoading(false))
-    }
-  }, [orderId])
+
+
+  }, [])
 
   useEffect(()=>{
     socket.on("order-status", (order)=>{
+      console.log(order)
       setOrder(order)
     })
 

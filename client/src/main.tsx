@@ -9,7 +9,6 @@ import {
   Route,
   RouterProvider,
 } from "react-router-dom";
-import { AlertProvider } from "./context/AlertContext.tsx";
 import {
   AdminLayout,
   Dashboard,
@@ -28,7 +27,6 @@ import {
 } from "./pages";
 import { ModalProvider } from "./context/ModalContext.tsx";
 import { CartProvider } from "./context/CartContext.tsx";
-import { OrderProvider } from "./context/OrderContext.tsx";
 import { OrderList } from "./components/admin";
 import { SearchProvider } from "./context/SearchContext.tsx";
 import { TableProvider } from "./context/TableContext.tsx";
@@ -52,7 +50,6 @@ const router = createBrowserRouter(
       </Route>
       <Route path="/payment-success" element={<PaymentSuccessPage />} />
       <Route path="/payment-failure" element={<PaymentFailurePage />} />
-      <Route path="/data?" element={<IndexPage />} />
       <Route path="d/:dishId" element={<DishDescription />} />
       <Route path="place-order" element={<PlaceOrder />} />
       <Route path="edit-order/o/:orderId" element={<EditOrder />} />
@@ -67,17 +64,13 @@ createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <Provider store={store} >
       <CartProvider>
-        <AlertProvider>
           <SearchProvider>
-            <OrderProvider>
               <ModalProvider>
                 <TableProvider>
                   <RouterProvider router={router} />
                 </TableProvider>
               </ModalProvider>
-            </OrderProvider>
           </SearchProvider>
-        </AlertProvider>
       </CartProvider>
     </Provider>
   </React.StrictMode>,

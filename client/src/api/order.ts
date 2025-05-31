@@ -1,20 +1,25 @@
 import axios from "axios";
-import { Dish } from "./dish";
 
 const orderApi = axios.create({
   baseURL: "/api/v1/orders",
 });
 
+export type OrderItem = {
+  _id: string;
+  quantity: number;
+  price: number;
+}
+
 export interface OrderType {
   table_no: string;
   orderType: "Delivery" |"Take Away" | "Dine-In"
   note: string;
-  orderItems: Dish[];
+  orderItems: OrderItem[];
   total: number;
   token?: string;
 }
 
-const makeOrder = async (orderData: OrderType) => {
+const makeOrder = async (orderData: any) => {
   try {
     const response = await orderApi.post(`make-order`, orderData, {
       headers:{
@@ -43,6 +48,7 @@ const getOrders = async (query:string) => {
   }
 };
 
+
 const getOrdersByType = async (orderType: string) => {
   try {
     const response = await orderApi.get(`/get-orders/${orderType}`);
@@ -55,9 +61,9 @@ const getOrdersByType = async (orderType: string) => {
   }
 };
 
-const getTableOrder = async (tableId: string) => {
+const getTableOrder = async () => {
   try {
-    const response = await orderApi.get(`/get-order/${tableId}`);
+    const response = await orderApi.get(`/get-order/`);
     return response.data;
   } catch (error) {
     console.error(error);
@@ -78,6 +84,8 @@ const getOrder = async (orderId: string) => {
     }
   }
 };
+
+
 
 const updateOrder = async (orderId:string, updates: object) => {
   try {

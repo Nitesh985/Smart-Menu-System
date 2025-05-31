@@ -1,5 +1,5 @@
 import { RiDeleteBin6Fill } from "react-icons/ri";
-import Button from "../../Button";
+import Button from "../../tagUtils/Button";
 import { deleteCategory } from "../../../api/category";
 import { useState } from "react";
 import { Loading, Modal } from "../..";

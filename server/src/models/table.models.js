@@ -12,18 +12,6 @@ const tableSchema = new Schema({
     }
 }, { timestamps: true })
 
-
-tableSchema.methods.generateAccessToken = function (){
-   return jwt.sign({
-        data:{_id: this._id}  
-    }, process.env.ACCESS_TOKEN_SECRET, {expiresIn: process.env.ACCESS_TOKEN_EXPIRY})
-}
-
-tableSchema.methods.generateRefreshToken = function (){
-    return jwt.sign({
-         data:{_id: this._id}  
-     }, process.env.REFRESH_TOKEN_SECRET, {expiresIn: process.env.REFRESH_TOKEN_EXPIRY})
- }
   
 
 

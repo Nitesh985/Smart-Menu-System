@@ -64,8 +64,6 @@ const registerUser = asyncHandler(async (req, res)=>{
     }
 
     const savedUser = await User.findById(user._id)
-    console.log("Saved User")
-    console.log(savedUser)
 
     const accessToken = savedUser.generateAccessToken()
     const refreshToken = savedUser.generateRefreshToken()

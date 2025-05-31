@@ -1,6 +1,6 @@
 // import logo from "../../assets/logo.png";
 import logo from '../../assets/qrlogo.png'
-import {Image, SearchBar} from "../index";
+import {Image, SearchBar} from "../../index";
 import { Link } from 'react-router-dom';
 
 function Header() {

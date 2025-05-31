@@ -21,14 +21,14 @@ import RatingStar from './RatingStar';
 import CreateCategory from './admin/EditMenu/CreateCategory';
 
 // Tag Utils
-import Button from './Button'
-import Input from './Input'
+import Button from './tagUtils/Button'
+import Input from './tagUtils/Input'
 import CoolInput from './CoolInput'
 import Select from './Select'
 import Radio from './Radio'
 import SelectOptions from './SelectOptions'
-import TextArea from './TextArea'
-import FileInput from './FileInput'
+import TextArea from './tagUtils/TextArea'
+import FileInput from './tagUtils/FileInput'
 import Table from './Table'
 import Divider from './Divider';
 import HomeComponent from './user/Home'

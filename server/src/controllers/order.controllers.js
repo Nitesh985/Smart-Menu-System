@@ -43,9 +43,15 @@ const makeOrder = asyncHandler(async (req, res) => {
     }
   });
 
-  const order = await Order.create({
-    tableId: findTable?._id,
-    orderedBy:req.user._id,
+  const findUserOrder = await Order.findOne({_id:new mongoose.Types.ObjectId(req.user._id), status:"PENDING"})
+
+
+  
+  
+  if (!findUserOrder){
+    const order = await Order.create({
+      tableId: findTable?._id,
+      orderedBy:req.user._id,
     note,
     orderItems,
     totalPrice: orderItems
@@ -53,10 +59,59 @@ const makeOrder = asyncHandler(async (req, res) => {
       .toFixed(2),
   });
 
-  res
+  return res
     .status(201)
     .json(new ApiResponse(201, order, "The order placed successfully"));
-});
+}
+    const totalPrice = orderItems.reduce((acc, item)=>acc+item.price*item.quantity, 0).toFixed(2)
+    const updatedOrder = await Order.findByIdAndUpdate(findUserOrder._id, {
+      $push: { orderItems: orderItems },
+      $inc: { totalPrice}
+    }, {new:true})
+
+    return res.status(201)
+    .json(new ApiResponse(202, updatedOrder, "The order was edited successfully!"))
+    
+  });
+  
+  
+const updateOrder = asyncHandler(async (req, res) => {
+    const { orderId } = req.params;
+  
+    const order = await Order.findById(orderId)
+  
+    if (!order) {
+      throw new ApiError(404, "Order not found!");
+    }
+    if (order.status === 'READY'){
+      throw new ApiError(400, "Cannot update a completed order!");
+    }
+  
+    const {orderItems} = req.body
+  
+    if (orderItems){
+      const updatedItems = getUpdates(order.orderItems, orderItems)
+  
+      const dishes = await Dish.find({ _id: { $in: updatedItems.map((item) => item._id) } });
+      dishes.forEach(async (dish) => {
+        if (dish?.stock){
+          await Dish.findByIdAndUpdate(dish._id, {
+          $inc: { stock: -dish.quantity },
+        });}
+      });
+    }
+  
+  
+    const updatedOrder = await Order.findByIdAndUpdate(orderId, req.body, {
+      new: true,
+    });
+  
+  
+    return res
+      .status(202)
+      .json(new ApiResponse(202, updatedOrder, "The order updated successfully"));
+  });
+
 
 const getAllOrders = asyncHandler(async (req, res) => {
   const {status} = req.query
@@ -451,42 +506,6 @@ const getOrder = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, order, "The order fetched successfully"));
 });
 
-const updateOrder = asyncHandler(async (req, res) => {
-  const { orderId } = req.params;
-
-  const order = await Order.findById(orderId)
-
-  if (!order) {
-    throw new ApiError(404, "Order not found!");
-  }
-  if (order.status === 'READY'){
-    throw new ApiError(400, "Cannot update a completed order!");
-  }
-
-  const {orderItems} = req.body
-
-  if (orderItems){
-    const updatedItems = getUpdates(order.orderItems, orderItems)
-
-    const dishes = await Dish.find({ _id: { $in: updatedItems.map((item) => item._id) } });
-    dishes.forEach(async (dish) => {
-      if (dish?.stock){
-        await Dish.findByIdAndUpdate(dish._id, {
-        $inc: { stock: -dish.quantity },
-      });}
-    });
-  }
-
-
-  const updatedOrder = await Order.findByIdAndUpdate(orderId, req.body, {
-    new: true,
-  });
-
-
-  return res
-    .status(200)
-    .json(new ApiResponse(200, updatedOrder, "The order updated successfully"));
-});
 
 const deleteOrder = asyncHandler(async (req, res) => {
   const { orderId } = req.params;

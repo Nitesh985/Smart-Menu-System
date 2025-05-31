@@ -5,7 +5,7 @@ import mongoose from 'mongoose'
 
 
 const getAllDishes = asyncHandler(async (req, res) => {
-    const foodItems = await Dish.find({});
+    const foodItems = await Dish.find({...req.query});
     if (!foodItems) {
         throw new ApiError(404, "The food items were not available");
     }

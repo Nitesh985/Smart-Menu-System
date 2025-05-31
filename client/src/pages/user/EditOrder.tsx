@@ -21,16 +21,17 @@ function EditOrder() {
   useEffect(()=>{
     if(orderId){
       setLoading(true)
+      updateOrder(orderId, {isEditing:true})
       getOrder(orderId)
       .then(res=>{
-        setOrder(res.data[0])
+        setOrder(res.data)
         if (!getNoOfItems()){
-          setCartItems(res.data[0]?.orderItems)
+          setCartItems(res.data?.orderItems)
         }
         })
         .finally(()=>setLoading(false))
       }
-  }, [orderId, setCartItems])
+  }, [orderId, setCartItems, getNoOfItems])
 
   if (loading) return <Loading />
 

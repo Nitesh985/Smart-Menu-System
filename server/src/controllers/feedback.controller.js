@@ -24,6 +24,20 @@ const writeFeedback = asyncHandler(async(req, res)=>{
 
 })
 
+const deleteFeedback = asyncHandler(async(req, res)=>{
+  const feedbackDeleted = await Feedback.findByIdAndDelete(req.params?.feedbackId)
+
+  if (!feedbackDeleted){
+    throw new ApiError(500, "Something went wrong deleting the feedback!")
+  }
+
+  return res.status(200)
+  .json(
+    new ApiResponse(200, null, "The feedback was successfully deleted!")
+  )
+
+})
+
 const getAllFeedbacks = asyncHandler(async(req, res)=>{
     const feedbackDetails = await Feedback.aggregate([
       {
@@ -117,4 +131,4 @@ const getAllFeedbacks = asyncHandler(async(req, res)=>{
       );
 })
 
-export { writeFeedback, getAllFeedbacks }
+export { writeFeedback, getAllFeedbacks, deleteFeedback }

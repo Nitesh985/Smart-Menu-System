@@ -1,5 +1,5 @@
 import { TiTick } from "react-icons/ti";
-import Button from "../../Button";
+import Button from "../../tagUtils/Button";
 import React, { useState } from "react";
 import Modal from "../../Modal";
 import { updateOrder } from "../../../api/order";

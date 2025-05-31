@@ -1,6 +1,6 @@
 import { Button } from ".";
 import { useEffect, useId, useRef, useState } from "react";
-import { showModal } from "./utils/Modal";
+import { showModal } from "./tagUtils/Modal";
 import { RxCross2 } from "react-icons/rx";
 import { TiTick } from "react-icons/ti";
 

@@ -1,5 +1,5 @@
-import Button from '../../Button'
-import Input from '../../Input'
+import Button from '../../tagUtils/Button'
+import Input from '../../tagUtils/Input'
 import { useForm, SubmitHandler } from "react-hook-form"
 import { registerUser } from '../../../api/user'
 import store from '../../../store/store'
