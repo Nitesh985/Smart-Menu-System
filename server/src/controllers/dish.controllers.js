@@ -151,7 +151,7 @@ const updateDishItem = asyncHandler(async (req, res)=>{
 
     dishUpdates.categoryId = findCategory?._id
     delete dishUpdates.category
-    console.log(dishUpdates) 
+ 
     
     const updatedFood = await Dish.findByIdAndUpdate(dishId, {...dishUpdates}) 
 
