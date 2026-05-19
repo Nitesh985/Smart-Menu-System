@@ -40,8 +40,7 @@ import { Order } from "./models/order.models.js";
 // //     }
 // // }
 // // console.log(results["Wi-Fi"][0]) 
-connectToDB() 
-
+connectToDB()
 .then(() => {
   //Add this before the app.get() block
   // socketIO.on("connection", (socket) => {

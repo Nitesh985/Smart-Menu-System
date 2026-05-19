@@ -2,14 +2,16 @@ import { createContext, useContext, useEffect, useState } from "react";
 
 const CartContext = createContext<null | {
   cartItems: CartProps[];
-  setCartItems: React.Dispatch<React.SetStateAction<CartProps[]>>
-  getCartTotal: () => number;
+  setCartItems: React.Dispatch<React.SetStateAction<CartProps[]>>;
+  hasActiveOrder: boolean;
+  setHasActiveOrder: React.Dispatch<React.SetStateAction<boolean>>;
+  getCartTotal: () => string;
   getNoOfItems: () => number;
-  getDishQuantity: (itemId:string)=> number;
-  addToCart: (item:CartProps) => void;
+  getDishQuantity: (itemId: string) => number;
+  addToCart: (item: CartProps) => void;
   removeFromCart: (itemId: string) => void;
   clearCart: () => void;
-  editCartItem: ({_id, ...updates}:{_id:string}) => void;
+  editCartItem: ({ _id, ...updates }: { _id: string }) => void;
 }>(null);
 
 interface CartProps {
@@ -24,65 +26,74 @@ interface CartProps {
 }
 
 export const CartProvider = ({ children }: { children: React.ReactNode }) => {
-  const [cartItems, setCartItems] = useState<CartProps[]>(()=>{
-    return JSON.parse(localStorage.getItem('CART') || '[]');
+  const [cartItems, setCartItems] = useState<CartProps[]>(() => {
+    return JSON.parse(localStorage.getItem("CART") || "[]");
   });
+
+  // Track if there is an active order waiting for delivery
+  const [hasActiveOrder, setHasActiveOrder] = useState<boolean>(() => {
+    return JSON.parse(localStorage.getItem("HAS_ACTIVE_ORDER") || "false");
+  });
+
   const getCartTotal = () => {
-    const total =  (cartItems?.reduce((total, cart) => total + (cart.price*cart.quantity), 0));
+    const total = cartItems?.reduce((total, cart) => total + cart.price * cart.quantity, 0);
     return total.toFixed(2);
   };
 
-
   const getNoOfItems = () => {
-    return cartItems?.reduce((total, item)=>total + item.quantity, 0) | 0;
-  }
-
-  const editCartItem = ({_id, ...updates}:{_id:string}) => {
-    setCartItems(prevItems=>prevItems.map(item=>{
-      if (item._id===_id){
-        return {
-          ...item,
-          ...updates
-        }
-      }
-      return item
-    }))
+    return cartItems?.reduce((total, item) => total + item.quantity, 0) || 0;
   };
 
-  const getDishQuantity = (itemId:string) => {
-    const item = cartItems.find(item=>item._id===itemId)
-    return item?.quantity?item.quantity:0;
-  }
+  const editCartItem = ({ _id, ...updates }: { _id: string }) => {
+    setCartItems((prevItems) =>
+      prevItems.map((item) => {
+        if (item._id === _id) {
+          return { ...item, ...updates };
+        }
+        return item;
+      })
+    );
+  };
 
-  const addToCart = (item:CartProps) => {
-    setCartItems((prevItems) => [...prevItems, { ...item, quantity: 1 }]);
+  const getDishQuantity = (itemId: string) => {
+    const item = cartItems.find((item) => item._id === itemId);
+    return item?.quantity ? item.quantity : 0;
+  };
+
+  const addToCart = (item: CartProps) => {
+    // Avoid duplicates if item already exists
+    setCartItems((prevItems) => {
+      const exists = prevItems.find((i) => i._id === item._id);
+      if (exists) return prevItems;
+      return [...prevItems, { ...item, quantity: 1 }];
+    });
   };
 
   const removeFromCart = (itemId: string) => {
-    setCartItems((prevItems) =>
-      prevItems.filter((item) => item._id !== itemId),
-    );
+    setCartItems((prevItems) => prevItems.filter((item) => item._id !== itemId));
   };
 
   const clearCart = () => {
     setCartItems([]);
   };
 
+  // Sync cart items to localStorage
   useEffect(() => {
     localStorage.setItem("CART", JSON.stringify(cartItems));
   }, [cartItems]);
 
+  // Sync active order status to localStorage
   useEffect(() => {
-    const localValue = localStorage.getItem("CART");
-    setCartItems(localValue ? JSON.parse(localValue) : []);
-  }, []);
-
+    localStorage.setItem("HAS_ACTIVE_ORDER", JSON.stringify(hasActiveOrder));
+  }, [hasActiveOrder]);
 
   return (
     <CartContext.Provider
       value={{
         cartItems,
         setCartItems,
+        hasActiveOrder,
+        setHasActiveOrder,
         getCartTotal,
         getNoOfItems,
         getDishQuantity,

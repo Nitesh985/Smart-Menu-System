@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import { getAllCategories } from "../api/category"
-import MobileContainer from "../components/MobileContainer";
+// import MobileContainer from "../components/MobileContainer";
 
 
 interface CategoryProps {
@@ -23,7 +23,7 @@ function Test() {
   }, [])
 
   return (
-    <MobileContainer className="bg-green-600" >
+    <>
       <h1>All Categories</h1>
       {categories.map((category:CategoryProps) => (
         <div key={category.id}>
@@ -31,7 +31,8 @@ function Test() {
           <p>{category.description}</p>
         </div>
       ))}
-    </MobileContainer>  
+    </>
+
   )
 }
 

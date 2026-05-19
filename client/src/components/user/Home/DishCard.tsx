@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Button, Image } from "../../";
 import useCartContext from "../../../context/CartContext";
-import { FaHeart, FaHeartBroken, FaRegHeart } from "react-icons/fa";
+import { FaRegHeart, FaHeart } from "react-icons/fa";
 import useSearchContext from "../../../context/SearchContext";
 import { Link } from "react-router-dom";
 
@@ -14,25 +14,28 @@ export interface DishProps {
     public_id: string;
   };
   description: string;
+  stock?: number;
 }
 
-const HighlightQuery = ({query, word}:{query:string, word:string}) => {
-    if (!query || !word.includes(query)) return <span>{word}</span>;
-
-    return <span className="font-medium">
+const HighlightQuery = ({ query, word }: { query: string; word: string }) => {
+  if (!query || !word.includes(query)) return <span>{word}</span>;
+  return (
+    <span>
       {word.split(query).map((part, index) => (
         <span key={index}>
           {part}
-          {index < word.split(query).length - 1 && <span className="text-green-500">{query}</span>}
+          {index < word.split(query).length - 1 && (
+            <span className="text-green-500">{query}</span>
+          )}
         </span>
       ))}
-    </span>;
+    </span>
+  );
+};
 
-}
-
-function DishCard({ _id, name, image, price, stock }: DishProps) {
+function DishCard({ _id, name, image, price, stock, description }: DishProps) {
   const { addToCart, editCartItem, getDishQuantity, removeFromCart } = useCartContext();
-  const {searchedQuery} = useSearchContext()
+  const { searchedQuery } = useSearchContext();
   const [quantity, setQuantity] = useState<number>(getDishQuantity(_id) || 0);
   const [favorite, setFavorite] = useState(false);
 
@@ -42,62 +45,87 @@ function DishCard({ _id, name, image, price, stock }: DishProps) {
   };
 
   const addQuantity = () => {
-    setQuantity((prevQuantity) => {
-      if (stock===0){
-        return prevQuantity
-      }
-      return stock?Math.min(stock, prevQuantity + 1):(prevQuantity+1)
+    setQuantity((prev) => {
+      if (stock === 0) return prev;
+      return stock ? Math.min(stock, prev + 1) : prev + 1;
     });
   };
 
   const subQuantity = () => {
-    setQuantity((prevQuantity) => Math.max(prevQuantity - 1, 0));
+    setQuantity((prev) => Math.max(prev - 1, 0));
   };
 
   useEffect(() => {
     editCartItem({ _id, quantity });
-    if (!quantity){
-      removeFromCart(_id)
-    }
+    if (!quantity) removeFromCart(_id);
   }, [quantity, _id]);
 
   return (
-    <div className="group mb-10 border-5">
-      {/* <div
-        onClick={() => setFavorite((prevState) => !prevState)}
-        className="absolute z-10 ml-36 mt-4 flex cursor-pointer btn-ghost items-center justify-center rounded-full bg-opacity-70 text-4xl text-red-500"
-      >
-        {favorite ? <FaHeart /> : <FaRegHeart className="bg-neutral bg-opacity-55 rounded-full text-white opacity-50" />}
-      </div> */}
-      {image && <Link to={`/d/${_id}`}>
-        <Image imageUrl={image.url} className="w-40 rounded-md" />
-      </Link>}
-      <div className="flex flex-col items-center p-1">
-        <h1 className="text-2xl font-bold">
-          <HighlightQuery query={searchedQuery} word={name}  />
-        </h1>
-        <h2 className="text-center text-xl font-semibold text-green-600">
-         ₹{price}
-        </h2>
-        {quantity ? (
-          <div className="mt-3 flex w-full items-center justify-between p-4 text-white">
-            <Button className="sub-button" onClick={subQuantity}>
-              -
-            </Button>
-            <p className="text-2xl font-bold text-gray-700">{quantity}</p>
-            <Button className="add-button" onClick={addQuantity}>
-              +
-            </Button>
+    <div className="group flex flex-col rounded-2xl bg-white shadow-md hover:shadow-xl transition-shadow duration-300 overflow-hidden w-full">
+      {/* Image */}
+      <div className="relative overflow-hidden">
+        <Link to={`/d/${_id}`}>
+          {image && (
+            <img
+              src={image.url}
+              alt={name}
+              className="w-full h-44 object-cover transition-transform duration-300 group-hover:scale-105"
+            />
+          )}
+        </Link>
+        {/* Favorite button */}
+        <button
+          onClick={() => setFavorite((prev) => !prev)}
+          className="absolute top-3 right-3 p-2 rounded-full bg-white bg-opacity-80 text-red-500 shadow hover:scale-110 transition-transform"
+        >
+          {favorite ? <FaHeart /> : <FaRegHeart />}
+        </button>
+        {/* Out of stock badge */}
+        {stock === 0 && (
+          <div className="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center">
+            <span className="bg-white text-gray-800 text-xs font-semibold px-3 py-1 rounded-full">
+              Out of Stock
+            </span>
           </div>
-        ) : (
-          <button
-            onClick={handleCartAdd}
-            className="mt-4 rounded-md bg-blue-600 p-2 text-white hover:bg-blue-500"
-            // "transition-transform transform duration-300 ease-in-out group-hover:transform group-hover:translate-y-10 "
-          >
-            Order Now
-          </button>
         )}
+      </div>
+
+      {/* Content */}
+      <div className="flex flex-col flex-1 p-4 gap-1">
+        <h1 className="text-base font-bold text-gray-800 truncate leading-tight">
+          <HighlightQuery query={searchedQuery} word={name} />
+        </h1>
+        <p className="text-xs text-gray-400 line-clamp-2 leading-relaxed">{description}</p>
+
+        <div className="flex items-center justify-between mt-auto pt-3">
+          <span className="text-lg font-bold text-green-600">₹{price}</span>
+
+          {quantity ? (
+            <div className="flex items-center gap-3">
+              <Button
+                className="w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold text-lg transition-colors"
+                onClick={subQuantity}
+              >
+                −
+              </Button>
+              <span className="text-base font-bold text-gray-800 w-4 text-center">{quantity}</span>
+              <Button
+                className="w-8 h-8 flex items-center justify-center rounded-full bg-green-500 hover:bg-green-600 text-white font-bold text-lg transition-colors"
+                onClick={addQuantity}
+              >
+                +
+              </Button>
+            </div>
+          ) : (
+            <button
+              onClick={handleCartAdd}
+              disabled={stock === 0}
+              className="rounded-full bg-blue-600 hover:bg-blue-500 disabled:bg-gray-300 disabled:cursor-not-allowed text-white text-sm font-semibold px-4 py-2 transition-colors"
+            >
+              Order Now
+            </button>
+          )}
+        </div>
       </div>
     </div>
   );

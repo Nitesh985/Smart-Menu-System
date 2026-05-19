@@ -4,25 +4,19 @@ import { Order } from "../models/order.models.js";
 import { Table } from "../models/table.models.js";
 import mongoose from "mongoose";
 
-
-function getUpdates (items1, items2){
+function getUpdates(items1, items2) {
   return items2.map((item2) => {
-   const toUpdate = items1.find((item1) => item2._id === item1._id);
-   if (toUpdate) {
-     return { ...item2, quantity:item2.quantity - toUpdate.quantity}
-   }
-   return {_id:item2._id, quantity:item2.quantity};
- });
+    const toUpdate = items1.find((item1) => item2._id === item1._id);
+    if (toUpdate) {
+      return { ...item2, quantity: item2.quantity - toUpdate.quantity };
+    }
+    return { _id: item2._id, quantity: item2.quantity };
+  });
 }
 
-
 const makeOrder = asyncHandler(async (req, res) => {
-  const { table_no, note, orderItems } = req.body;
-  const reqFields = ["table_no", "orderItems"];
-
-  const findTable = await Table.findOne({
-    table_no,
-  });
+  const { tableId, note, orderItems } = req.body; // tableId instead of table_no
+  const reqFields = ["tableId", "orderItems"];
 
   reqFields.forEach((field) => {
     if (!req.body[field]) {
@@ -34,6 +28,11 @@ const makeOrder = asyncHandler(async (req, res) => {
     throw new ApiError(404, "No dishes were selected!");
   }
 
+  const findTable = await Table.findById(tableId); // direct _id lookup
+  if (!findTable) {
+    throw new ApiError(404, "Table not found.");
+  }
+
   orderItems.map(async (food) => {
     const foodItem = await Dish.findByIdAndUpdate(food._id, {
       $inc: { stock: -food.quantity },
@@ -43,84 +42,92 @@ const makeOrder = asyncHandler(async (req, res) => {
     }
   });
 
-  const findUserOrder = await Order.findOne({_id:new mongoose.Types.ObjectId(req.user._id), status:"PENDING"})
+  const findUserOrder = await Order.findOne({
+    orderedBy: new mongoose.Types.ObjectId(req.user._id),
+    status: "PENDING",
+  });
 
-
-  
-  
-  if (!findUserOrder){
+  if (!findUserOrder) {
     const order = await Order.create({
-      tableId: findTable?._id,
-      orderedBy:req.user._id,
-    note,
-    orderItems,
-    totalPrice: orderItems
-      .reduce((acc, item) => acc + item.price * item.quantity, 0)
-      .toFixed(2),
+      tableId: findTable._id,
+      orderedBy: req.user._id,
+      note,
+      orderItems,
+      totalPrice: orderItems
+        .reduce((acc, item) => acc + item.price * item.quantity, 0)
+        .toFixed(2),
+    });
+    return res
+      .status(201)
+      .json(new ApiResponse(201, order, "The order placed successfully"));
+  }
+
+  const totalPrice = orderItems
+    .reduce((acc, item) => acc + item.price * item.quantity, 0)
+    .toFixed(2);
+
+  const updatedOrder = await Order.findByIdAndUpdate(
+    findUserOrder._id,
+    {
+      $push: { orderItems: { $each: orderItems } },
+      $inc: { totalPrice: parseFloat(totalPrice) },
+    },
+    { new: true },
+  );
+
+  return res
+    .status(202)
+    .json(
+      new ApiResponse(202, updatedOrder, "The order was edited successfully!"),
+    );
+});
+
+const updateOrder = asyncHandler(async (req, res) => {
+  const { orderId } = req.params;
+
+  const order = await Order.findById(orderId);
+
+  if (!order) {
+    throw new ApiError(404, "Order not found!");
+  }
+  if (order.status === "READY") {
+    throw new ApiError(400, "Cannot update a completed order!");
+  }
+
+  const { orderItems } = req.body;
+
+  if (orderItems) {
+    const updatedItems = getUpdates(order.orderItems, orderItems);
+
+    const dishes = await Dish.find({
+      _id: { $in: updatedItems.map((item) => item._id) },
+    });
+    dishes.forEach(async (dish) => {
+      if (dish?.stock) {
+        await Dish.findByIdAndUpdate(dish._id, {
+          $inc: { stock: -dish.quantity },
+        });
+      }
+    });
+  }
+
+  const updatedOrder = await Order.findByIdAndUpdate(orderId, req.body, {
+    new: true,
   });
 
   return res
-    .status(201)
-    .json(new ApiResponse(201, order, "The order placed successfully"));
-}
-    const totalPrice = orderItems.reduce((acc, item)=>acc+item.price*item.quantity, 0).toFixed(2)
-    const updatedOrder = await Order.findByIdAndUpdate(findUserOrder._id, {
-      $push: { orderItems: orderItems },
-      $inc: { totalPrice}
-    }, {new:true})
-
-    return res.status(201)
-    .json(new ApiResponse(202, updatedOrder, "The order was edited successfully!"))
-    
-  });
-  
-  
-const updateOrder = asyncHandler(async (req, res) => {
-    const { orderId } = req.params;
-  
-    const order = await Order.findById(orderId)
-  
-    if (!order) {
-      throw new ApiError(404, "Order not found!");
-    }
-    if (order.status === 'READY'){
-      throw new ApiError(400, "Cannot update a completed order!");
-    }
-  
-    const {orderItems} = req.body
-  
-    if (orderItems){
-      const updatedItems = getUpdates(order.orderItems, orderItems)
-  
-      const dishes = await Dish.find({ _id: { $in: updatedItems.map((item) => item._id) } });
-      dishes.forEach(async (dish) => {
-        if (dish?.stock){
-          await Dish.findByIdAndUpdate(dish._id, {
-          $inc: { stock: -dish.quantity },
-        });}
-      });
-    }
-  
-  
-    const updatedOrder = await Order.findByIdAndUpdate(orderId, req.body, {
-      new: true,
-    });
-  
-  
-    return res
-      .status(202)
-      .json(new ApiResponse(202, updatedOrder, "The order updated successfully"));
-  });
-
+    .status(202)
+    .json(new ApiResponse(202, updatedOrder, "The order updated successfully"));
+});
 
 const getAllOrders = asyncHandler(async (req, res) => {
-  const {status} = req.query
+  const { status } = req.query;
 
   const orders = await Order.aggregate([
     {
-      $match:{
-        status:status?.toUpperCase()
-      }
+      $match: {
+        status: status?.toUpperCase(),
+      },
     },
     {
       $lookup: {
@@ -146,19 +153,19 @@ const getAllOrders = asyncHandler(async (req, res) => {
       },
     },
     {
-      $lookup:{
+      $lookup: {
         from: "payments",
         localField: "_id",
         foreignField: "orderId",
-        as: "payment"
-      }
+        as: "payment",
+      },
     },
     {
-      $addFields:{
-        payment:{
-          $first:"$payment"
-        }
-      }
+      $addFields: {
+        payment: {
+          $first: "$payment",
+        },
+      },
     },
     {
       $project: {
@@ -167,8 +174,8 @@ const getAllOrders = asyncHandler(async (req, res) => {
         orderType: 1,
         note: 1,
         totalPrice: 1,
-        status:1,
-        isEditing:1,
+        status: 1,
+        isEditing: 1,
         orderItems: {
           $map: {
             input: "$dishes",
@@ -211,7 +218,7 @@ const getAllOrders = asyncHandler(async (req, res) => {
   //     }))
 
   return res.json(
-    new ApiResponse(200, orders, "All orders fetched sucessfully!")
+    new ApiResponse(200, orders, "All orders fetched sucessfully!"),
   );
 });
 
@@ -246,19 +253,19 @@ const getOrders = asyncHandler(async (req, res) => {
       },
     },
     {
-      $lookup:{
+      $lookup: {
         from: "payments",
         localField: "_id",
         foreignField: "orderId",
-        as: "payment"
-      }
+        as: "payment",
+      },
     },
     {
-      $addFields:{
-        payment:{
-          $first:"$payment"
-        }
-      }
+      $addFields: {
+        payment: {
+          $first: "$payment",
+        },
+      },
     },
     {
       $project: {
@@ -267,8 +274,8 @@ const getOrders = asyncHandler(async (req, res) => {
         orderType: 1,
         note: 1,
         totalPrice: 1,
-        status:1,
-        isEditing:1,
+        status: 1,
+        isEditing: 1,
         orderItems: {
           $map: {
             input: "$dishes",
@@ -307,7 +314,7 @@ const getOrders = asyncHandler(async (req, res) => {
   ]);
 
   return res.json(
-    new ApiResponse(200, orders, "The orders fetched successfully")
+    new ApiResponse(200, orders, "The orders fetched successfully"),
   );
 });
 
@@ -405,10 +412,8 @@ const getOrder = asyncHandler(async (req, res) => {
   //   },
   // ])
 
-
-
   const order = await Order.aggregate([
-    { 
+    {
       $match: {
         _id: new mongoose.Types.ObjectId(orderId),
       },
@@ -437,19 +442,19 @@ const getOrder = asyncHandler(async (req, res) => {
       },
     },
     {
-      $lookup:{
+      $lookup: {
         from: "payments",
         localField: "_id",
         foreignField: "orderId",
-        as: "payment"
-      }
+        as: "payment",
+      },
     },
     {
-      $addFields:{
-        payment:{
-          $first:"$payment"
-        }
-      }
+      $addFields: {
+        payment: {
+          $first: "$payment",
+        },
+      },
     },
     {
       $project: {
@@ -458,9 +463,9 @@ const getOrder = asyncHandler(async (req, res) => {
         orderType: 1,
         note: 1,
         totalPrice: 1,
-        payment:1,
-        status:1,
-        isEditing:1,
+        payment: 1,
+        status: 1,
+        isEditing: 1,
         orderItems: {
           $map: {
             input: "$dishes",
@@ -498,36 +503,33 @@ const getOrder = asyncHandler(async (req, res) => {
     },
   ]);
 
-
-
-
   return res
     .status(200)
     .json(new ApiResponse(200, order, "The order fetched successfully"));
 });
 
-
 const deleteOrder = asyncHandler(async (req, res) => {
   const { orderId } = req.params;
 
-  const order = await Order.findById(orderId)
+  const order = await Order.findById(orderId);
 
   if (!order) {
     throw new ApiError(404, "Order not found!");
   }
- 
-  const dishes = await Dish.find({ _id: { $in: order.orderItems.map((item) => item._id) } });
 
+  const dishes = await Dish.find({
+    _id: { $in: order.orderItems.map((item) => item._id) },
+  });
 
   dishes.forEach(async (dish) => {
-    if (dish?.stock){
+    if (dish?.stock) {
       await Dish.findByIdAndUpdate(dish._id, {
-      $inc: { stock: dish.quantity },
-    });}
+        $inc: { stock: dish.quantity },
+      });
+    }
   });
 
   const deleteOrder = await Order.findByIdAndDelete(orderId);
-
 
   if (!deleteOrder) {
     throw new ApiError(500, "Internal Server error while deleting the order");
@@ -539,9 +541,16 @@ const deleteOrder = asyncHandler(async (req, res) => {
       new ApiResponse(
         200,
         null,
-        `The order by order id ${orderId} is successfully deleted`
-      )
+        `The order by order id ${orderId} is successfully deleted`,
+      ),
     );
 });
 
-export { makeOrder, getAllOrders, getOrders, getOrder, deleteOrder, updateOrder };
+export {
+  makeOrder,
+  getAllOrders,
+  getOrders,
+  getOrder,
+  deleteOrder,
+  updateOrder,
+};

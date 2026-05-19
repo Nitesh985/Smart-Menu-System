@@ -1,16 +1,13 @@
-import { Link } from "react-router-dom";
-import { CartButton, HomeComponent } from "../../components"
-
+import { HomeComponent } from "../../components";
+import CartButton from "../../components/CartButton"; 
 
 function Home() {
   return (
     <>
       <HomeComponent />
-      {/* <Link to="./orders"  >
-        <CartButton />
-      </Link> */}
+      <CartButton />
     </>
-  )
+  );
 }
 
-export default Home
+export default Home;

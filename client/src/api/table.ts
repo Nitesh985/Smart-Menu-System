@@ -2,7 +2,29 @@ import axios, { AxiosError } from "axios";
 
 const tableApi = axios.create({
   baseURL: "/api/v1/tables",
+  headers: {
+    "Content-Type": "application/json",
+  },
 });
+
+
+interface VerifyTableResponse {
+  success: boolean;
+  tableId: string;
+  tableNumber: number;
+}
+
+const verifyQRToken = async (token: string): Promise<VerifyTableResponse> => {
+  try {
+    // Sending the QR token to the backend via a POST request
+    const response = await tableApi.post<VerifyTableResponse>("/verify", { token });
+    return response.data;
+  } catch (error) {
+    const axiosError = error as AxiosError;
+    console.error("Error verifying table token:", axiosError.response?.data || axiosError.message);
+    throw axiosError.response?.data || new Error("Failed to verify table session");
+  }
+};
 
 
 const getAllTables = async() =>{
@@ -66,4 +88,4 @@ const refreshAccessToken = async() =>{
     }
 }
 
-export { getAllTables, getTable, loginTable, logoutTable, refreshAccessToken }
+export { getAllTables, getTable, loginTable, logoutTable, refreshAccessToken, verifyQRToken }

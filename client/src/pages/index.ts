@@ -1,7 +1,7 @@
 // admin
 import AdminLayout from "./admin/AdminLayout";
 import MenuPage from './user/UserOrder'
-import Dashboard from "./admin/Dashboard";
+import QRCodesPage from "./admin/QRCodes";
 import NotFoundPage from "./not-found";
 import  Orders from "./admin/Orders";
 import EditMenu  from "./admin/EditMenu";
@@ -16,6 +16,7 @@ import UserOrderList from './user/UserOrder'
 import DishDescription from './user/DishDescription'
 import IndexPage from "./user/IndexPage";
 
+
 // payment
 import PaymentSuccessPage from "./payment/Success";
 import PaymentFailurePage from './payment/Failure';
@@ -24,7 +25,7 @@ export {
     // admin
     AdminLayout,
     MenuPage,
-    Dashboard,
+    QRCodesPage,
     NotFoundPage,
     Orders,
     EditMenu,
@@ -36,8 +37,8 @@ export {
     PlaceOrder,
     UserOrderList,
     DishDescription,
-    IndexPage,
     EditOrder,
+    IndexPage,
 
     // payment
     PaymentFailurePage,

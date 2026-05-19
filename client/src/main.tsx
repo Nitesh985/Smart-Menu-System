@@ -11,7 +11,7 @@ import {
 } from "react-router-dom";
 import {
   AdminLayout,
-  Dashboard,
+  QRCodesPage,
   Orders,
   OrderDetails,
   EditMenu,
@@ -37,7 +37,7 @@ const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/">
       <Route path="admin/" element={<AdminLayout />}>
-        <Route path="qr-codes" element={<Dashboard />} />
+        <Route path="qr-codes" element={<QRCodesPage />} />
         <Route path="edit-menu" element={<EditMenu />} />
         <Route path="orders/" element={<Orders />}>
           <Route path="" element={<OrderList />} />
@@ -48,6 +48,7 @@ const router = createBrowserRouter(
       <Route path="" element={<App />}>
         <Route path="/:categoryId" />
       </Route>
+      <Route path="/scan" element={<IndexPage />} />
       <Route path="/payment-success" element={<PaymentSuccessPage />} />
       <Route path="/payment-failure" element={<PaymentFailurePage />} />
       <Route path="d/:dishId" element={<DishDescription />} />

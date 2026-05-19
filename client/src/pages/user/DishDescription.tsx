@@ -4,7 +4,7 @@ import styled from "styled-components";
 import { getDishById } from "../../api/dish";
 import { Loading } from "../../components";
 import useCartContext from "../../context/CartContext";
-import Footer from "../../components/Footer";
+// import Footer from "../../components/Footer";
 
 type DishType = {
   _id: string;
@@ -96,7 +96,7 @@ function DishDescriptionPage() {
           </ActionBar>
         </DishContainer>
       </CardWrapper>
-      <Footer />
+      {/*<Footer />*/}
     </div>
   );
 }
